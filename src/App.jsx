@@ -11,11 +11,13 @@ import Login from "./Pages/Login"
 import Profile from "./Pages/Profile"
 import ForgotPassword from "./Pages/ForgotPassword"
 import Terms from "./Pages/Terms"
+import ScrollToTop from "./components/ScrollToTop"
 
 const app = () => {
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
 
       <Routes>

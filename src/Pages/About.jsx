@@ -45,6 +45,7 @@ const About = () => {
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
           <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000"></div>
           <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-emerald-100/30 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-4000"></div>
+
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -79,7 +80,7 @@ const About = () => {
       </div>
 
       {/* Stats with Glassmorphism */}
-      <div className="container mx-auto px-4 -mt-20 relative z-20">
+      <div className="container mx-auto px-4 mt-20 relative z-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 bg-white/80 backdrop-blur-2xl p-8 md:p-12 rounded-[2.5rem] border border-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]">
           {stats.map((stat, index) => (
             <div key={index} className="text-center group">
