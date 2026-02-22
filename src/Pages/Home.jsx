@@ -18,7 +18,7 @@ const Home = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="hero-banner.avif"
-            alt="Library"
+            alt="Core Archive Library Interior - A vast landscape of scholarly knowledge and research books"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/60 to-black/60"></div>
@@ -34,9 +34,9 @@ const Home = () => {
             <span className="text-sm font-bold tracking-widest uppercase">The Scholar's Sanctuary</span>
           </div>
 
-          <h1 className="text-7xl md:text-9xl font-black mb-10 tracking-tighter text-indigo-500 leading-[0.9]">
+          <h1 className="text-7xl md:text-9xl font-black mb-10 tracking-tighter text-white leading-[0.9]">
             Knowledge <br />
-            <span className="bg-gradient-to-r from-indigo-600 via-teal-600 to-emerald-500 bg-clip-text text-transparent italic">Refined.</span>
+            <span className="bg-gradient-to-r from-white via-white to-white bg-clip-text text-transparent italic">Refined.</span>
           </h1>
 
           <p className="text-2xl md:text-3xl text-gray-200 max-w-3xl mx-auto mb-6 font-light leading-relaxed">
@@ -52,7 +52,7 @@ const Home = () => {
               <div className="flex -space-x-3">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden ring-2 ring-indigo-50">
-                    <img src={`https://i.pravatar.cc/100?u=${i + 20}`} alt="scholar" />
+                    <img src={`https://i.pravatar.cc/100?u=${i + 20}`} alt="Core Archive Member Scholar" />
                   </div>
                 ))}
               </div>
@@ -145,7 +145,7 @@ const Home = () => {
             <div className="aspect-[6/5] rounded-[3rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 hover:scale-105 border-8 border-white">
               <img
                 src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80"
-                alt="Research"
+                alt="Scholarly Research and Digital Intelligence documentation at Core Archive"
                 className="w-full h-full object-cover"
               />
             </div>

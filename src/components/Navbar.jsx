@@ -77,7 +77,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
-            <form onSubmit={handleSearch} className="mb-4">
+            <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="mb-4">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -90,24 +90,24 @@ const Navbar = () => {
               </div>
             </form>
             <div className="flex flex-col gap-2">
-              <Link to="/Collection" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Collection</Link>
-              <Link to="/About" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">About</Link>
-              <Link to="/Contact" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Contact</Link>
+              <Link to="/Collection" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Collection</Link>
+              <Link to="/About" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">About</Link>
+              <Link to="/Contact" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Contact</Link>
               {isLoggedIn ? (
                 <>
-                  <Link to="/wishlist" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300 flex items-center gap-2">
+                  <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300 flex items-center gap-2">
                     <Heart size={18} />
                     <span>Wishlist</span>
                   </Link>
-                  <Link to="/Profile" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300 flex items-center gap-2">
+                  <Link to="/Profile" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300 flex items-center gap-2">
                     <User size={18} />
                     <span>Profile</span>
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/Login" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Login</Link>
-                  <Link to="/Signup" className="px-4 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-lg text-center font-medium">Sign Up</Link>
+                  <Link to="/Login" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Login</Link>
+                  <Link to="/Signup" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-lg text-center font-medium">Sign Up</Link>
                 </>
               )}
             </div>

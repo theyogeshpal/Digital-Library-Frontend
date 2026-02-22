@@ -66,7 +66,7 @@ const About = () => {
               <div className="flex -space-x-4">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-gray-200 overflow-hidden">
-                    <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="user" />
+                    <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="Core Archive Contributing Scholar" />
                   </div>
                 ))}
                 <div className="w-12 h-12 rounded-full border-4 border-white bg-teal-600 flex items-center justify-center text-white text-xs font-bold">
@@ -119,7 +119,7 @@ const About = () => {
             <div className="aspect-[6/5] rounded-[3rem] overflow-hidden shadow-2xl relative group">
               <img
                 src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80"
-                alt="Library"
+                alt="Historical Library Archive at Core Archive - Preserving Centuries of Human Knowledge"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-indigo-950/80 to-transparent"></div>
@@ -160,7 +160,7 @@ const About = () => {
         <div className="bg-gradient-to-br from-indigo-900 via-indigo-950 to-teal-900 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-[0_32px_64px_-16px_rgba(30,41,59,0.3)]">
           <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
-            <img src="logo/horizontal-logo.png" className="w-100 invert mx-auto mb-8 text-teal-400" />
+            <img src="logo/horizontal-logo.png" alt="Core Archive - Official Scholarly Repository Logo" className="w-100 invert mx-auto mb-8 text-teal-400" />
             <h2 className="text-4xl md:text-5xl font-black mb-8 italic">Ready to Begin Your Fellowship?</h2>
             <p className="text-xl opacity-80 mb-10 max-w-2xl mx-auto font-light">
               Join thousands of scholars and access the world's finest digital collection.
