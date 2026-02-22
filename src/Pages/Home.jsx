@@ -17,7 +17,7 @@ const Home = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/hero-banner.avif"
+            src="hero-banner.avif"
             alt="Library"
             className="w-full h-full object-cover"
           />
