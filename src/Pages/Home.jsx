@@ -71,7 +71,7 @@ const Home = () => {
       </section>
 
       {/* Featured Categories */}
-      <section className="py-12 pb-28  container mx-auto px-20">
+      <section className="py-12 pb-28  container mx-auto lg:px-20">
         <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
           <div className="max-w-2xl">
             <h2 className="text-5xl font-black text-indigo-950 mb-6 underline decoration-teal-500 decoration-8 underline-offset-[12px]">Archives.</h2>
