@@ -77,10 +77,10 @@ const Footer = () => {
                     <div>
                         <h3 className="text-white font-bold mb-6 flex items-center gap-2">
                             <span className="w-8 h-1 bg-gradient-to-r from-indigo-600 to-teal-600 rounded-full"></span>
-                            The Library Digest
+                            Collection Updates
                         </h3>
                         <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                            Stay updated with the latest research highlights and archival additions.
+                            Stay updated with the latest scholarly volumes and archival additions.
                         </p>
                         <form className="relative">
                             <input

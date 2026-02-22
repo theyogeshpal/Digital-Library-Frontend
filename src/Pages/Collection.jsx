@@ -308,7 +308,7 @@ const Collection = () => {
             Can't find a specific resource?
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light">
-            Our curators are constantly expanding the archive. Request a special volume or access to restricted scholarly papers.
+            Our curators are constantly expanding the archive. Request a special volume or access to restricted scholarly academic editions.
           </p>
           <button className="px-12 py-5 bg-teal-500 hover:bg-teal-400 text-indigo-950 rounded-2xl font-black shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95">
             Request Addition

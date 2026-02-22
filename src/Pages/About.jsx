@@ -134,10 +134,10 @@ const About = () => {
           </div>
         </div>
 
-        {/* Features Section */}
+        {/* The Academic Standard */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-black mb-4 text-indigo-950">The Academic Standard</h2>
-          <p className="text-gray-500 text-lg">Tools designed specifically for research and deep learning.</p>
+          <p className="text-gray-500 text-lg">Tools designed specifically for deep study and archival preservation.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (

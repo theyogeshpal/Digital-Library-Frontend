@@ -5,9 +5,27 @@ import { Link } from 'react-router-dom';
 const Home = () => {
 
   const categories = [
-    { title: 'Digital Archives', count: '4,200+ Volumes', color: 'indigo', icon: Shield },
-    { title: 'Research Papers', count: '12,500+ Papers', color: 'teal', icon: Zap },
-    { title: 'Classic Literature', count: '1,800+ Classics', color: 'emerald', icon: Award }
+    {
+      title: 'Digital Archives',
+      count: '4,200+ Volumes',
+      color: 'indigo',
+      icon: Shield,
+      image: 'digital-library.png'
+    },
+    {
+      title: 'Scholarly Volumes',
+      count: '12,500+ Volumes',
+      color: 'teal',
+      icon: Zap,
+      image: 'scolar.png'
+    },
+    {
+      title: 'Classic Literature',
+      count: '1,800+ Classics',
+      color: 'emerald',
+      icon: Award,
+      image: 'litrature.png'
+    }
   ];
 
   return (
@@ -36,7 +54,7 @@ const Home = () => {
 
           <h1 className="text-7xl md:text-9xl font-black mb-10 tracking-tighter text-white leading-[0.9]">
             Knowledge <br />
-            <span className="bg-gradient-to-r from-white via-white to-purple-300 bg-clip-text text-transparent italic">Refined.</span>
+            <span className="bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent italic">Refined.</span>
           </h1>
 
           <p className="text-2xl md:text-3xl text-gray-200 max-w-3xl mx-auto mb-6 font-light leading-relaxed">
@@ -74,10 +92,10 @@ const Home = () => {
       <section className="py-12 pb-28  container mx-auto px-4 lg:px-20">
         <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
           <div className="max-w-2xl">
-            <h2 className="text-5xl font-black text-indigo-950 mb-6 underline decoration-teal-500 decoration-8 underline-offset-[12px]">Archives.</h2>
-            <p className="text-xl text-gray-500">Curated collections spanning across centuries of human intelligence.</p>
+            <h2 className="text-5xl font-black text-indigo-950 mb-6 underline decoration-teal-500 decoration-8 underline-offset-[12px] text-center lg:text-start ">Archives.</h2>
+            <p className="text-xl text-gray-500 text-center lg:text-start ">Curated collections spanning across centuries of human intelligence.</p>
           </div>
-          <Link to="/Catalogue" className="text-indigo-900 font-black flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b-4 border-teal-100">
+          <Link to="/Catalogue" className="text-indigo-900 font-black flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b-4 border-teal-100 mx-auto lg:mx-0  ">
             View All Collections <ArrowRight />
           </Link>
         </div>
@@ -85,15 +103,21 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {categories.map((cat, i) => (
             <div key={i} className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:-translate-y-4">
-              <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-700 opacity-90 group-hover:opacity-100 ${cat.color === 'indigo' ? 'from-indigo-900 to-indigo-950' :
-                cat.color === 'teal' ? 'from-teal-800 to-teal-950' :
-                  'from-emerald-800 to-emerald-950'
-                }`}></div>
-              {/* Pattern Overlay */}
-              <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+              {/* Background Image */}
+              <img
+                src={cat.image}
+                alt={cat.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125"
+              />
 
-              <div className="relative h-full p-10 flex flex-col justify-between text-white">
-                <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110">
+              {/* Overlay Gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-700 opacity-80 group-hover:opacity-90 ${cat.color === 'indigo' ? 'from-indigo-950/90 via-indigo-900/60 to-transparent' :
+                cat.color === 'teal' ? 'from-teal-950/90 via-teal-900/60 to-transparent' :
+                  'from-emerald-950/90 via-emerald-900/60 to-transparent'
+                }`}></div>
+
+              <div className="relative h-full p-10 flex flex-col justify-between text-white z-10">
+                <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 border border-white/20">
                   <cat.icon size={32} className="text-white" />
                 </div>
                 <div>
@@ -120,22 +144,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Paper Section */}
+      {/* Featured Volume Section */}
       <section className="py-20 container mx-auto px-4">
         <div className="bg-white rounded-[4rem] p-10 md:p-20 border border-indigo-50 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.1)] flex flex-col lg:flex-row items-center gap-20">
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-sm mb-8 uppercase tracking-widest">
-              Paper of the Month
+              Volume of the Month
             </div>
             <h2 className="text-5xl font-black text-indigo-950 mb-8 leading-tight">
               The Evolution of <br />
               <span className="text-teal-600">Digital Intelligence</span>
             </h2>
             <p className="text-xl text-gray-500 leading-relaxed mb-10">
-              A deep dive into how large language models are reshaping the methodology of academic research in the 21st century.
+              A deep dive into how large language models are reshaping the methodology of academic study in the 21st century.
             </p>
             <button className="flex items-center gap-4 text-xl font-black text-indigo-900 group">
-              Read Original Paper
+              Explore the Volume
               <span className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-900 group-hover:text-white transition-all">
                 <ArrowRight />
               </span>
@@ -149,8 +173,8 @@ const Home = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-10 -left-10 bg-teal-500 p-10 rounded-[2.5rem] shadow-2xl animate-bounce animation-duration-5000">
-              <Star size={40} className="text-white" />
+            <div className="absolute -bottom-10 -left-10 bg-teal-500 p-5 rounded-3xl shadow-2xl animate-bounce animation-duration-5000">
+              <Star size={30} className="text-white" />
             </div>
           </div>
         </div>

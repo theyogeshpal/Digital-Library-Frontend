@@ -54,7 +54,7 @@ const Contact = () => {
             Let's <span className="bg-gradient-to-r from-indigo-700 to-teal-600 bg-clip-text text-transparent">Connect</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-light">
-            Need assistance with your research or library access? We're here to help you navigate.
+            Need assistance with your study or library access? We're here to help you navigate the collection.
           </p>
         </div>
       </div>
@@ -96,7 +96,7 @@ const Contact = () => {
                 </div>
                 <h2 className="text-3xl font-black mb-6 text-indigo-950">Scholarly Support</h2>
                 <p className="text-lg text-gray-500 leading-relaxed mb-8">
-                  Whether you're a student, researcher, or faculty member - our team is ready to assist your scholarly journey.
+                  Whether you're a student, researcher, or faculty member - our team is ready to assist your scholarly journey through our vast collection.
                 </p>
                 <div className="space-y-5">
                   {[
@@ -118,8 +118,8 @@ const Contact = () => {
               <div className="bg-gradient-to-br from-indigo-900 to-teal-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-black mb-4 underline decoration-teal-400 decoration-4 underline-offset-8">Research Help?</h3>
-                  <p className="opacity-80 mb-8 text-lg">Our librarians are standing by to help you find the resources you need for your dissertation or thesis.</p>
+                  <h3 className="text-2xl font-black mb-4 underline decoration-teal-400 decoration-4 underline-offset-8">Collection Help?</h3>
+                  <p className="opacity-80 mb-8 text-lg">Our librarians are standing by to help you find the volumes you need for your dissertation or thesis.</p>
                   <button className="bg-white text-indigo-950 px-8 py-4 rounded-2xl font-black hover:shadow-2xl transition-all hover:scale-105 active:scale-95">
                     Ask a Librarian
                   </button>
