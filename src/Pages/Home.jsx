@@ -36,7 +36,7 @@ const Home = () => {
 
           <h1 className="text-7xl md:text-9xl font-black mb-10 tracking-tighter text-white leading-[0.9]">
             Knowledge <br />
-            <span className="bg-gradient-to-r from-white via-white to-white bg-clip-text text-transparent italic">Refined.</span>
+            <span className="bg-gradient-to-r from-white via-white to-purple-300 bg-clip-text text-transparent italic">Refined.</span>
           </h1>
 
           <p className="text-2xl md:text-3xl text-gray-200 max-w-3xl mx-auto mb-6 font-light leading-relaxed">
