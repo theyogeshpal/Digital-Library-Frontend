@@ -39,8 +39,8 @@ const Login = () => {
 
       <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 relative z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full mb-4 overflow-hidden">
-            <img src="/logo/favicon.png" alt="Core Archive Logo" className="w-full h-full object-cover" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-white rounded-full mb-4 overflow-hidden">
+            <img src="logo/favicon.png" alt="Core Archive Logo" className="w-full h-full object-cover" />
           </div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Welcome Back</h2>
           <p className="text-gray-600 mt-2">Login to access your Core Archive</p>
