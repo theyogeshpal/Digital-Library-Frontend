@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, BookOpen, User, Menu, X, Heart, LogOut } from 'lucide-react';
 
 const Navbar = () => {
@@ -7,6 +7,8 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const isLoggedIn = false; // Replace with actual auth state
+  const location = useLocation()
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -21,10 +23,10 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-              <BookOpen className="text-white" size={24} />
+            <div className="w-70  overflow-hidden rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+              <img src="/logo/horizontal-logo.png" alt="Core Archive Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">DigiLib</span>
+            {/* <span className="text-xl font-bold bg-gradient-to-r from-indigo-700 to-teal-600 bg-clip-text text-transparent">Core Archive</span> */}
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -36,31 +38,32 @@ const Navbar = () => {
                 placeholder="Search books, authors, topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all duration-300"
+                className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all duration-300"
               />
             </div>
           </form>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/Collection" className="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300">Collection</Link>
-            <Link to="/About" className="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300">About</Link>
-            <Link to="/Contact" className="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300">Contact</Link>
-            
+            <Link to="/" className={location.pathname == "/" ? "text-blue-500 hover:text-indigo-600 font-medium transition-colors duration-300" : "text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300"} >Home</Link>
+            <Link to="/Collection" className={location.pathname == "/Collection" ? "text-blue-500 hover:text-indigo-600 font-medium transition-colors duration-300" : "text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300"}>Collection</Link>
+            <Link to="/About" className={location.pathname == "/About" ? "text-blue-500 hover:text-indigo-600 font-medium transition-colors duration-300" : "text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300"}>About</Link>
+            <Link to="/Contact" className={location.pathname == "/Contact" ? "text-blue-500 hover:text-indigo-600 font-medium transition-colors duration-300" : "text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300"}>Contact</Link>
+
             {isLoggedIn ? (
               <div className="flex items-center gap-3">
                 <Link to="/wishlist" className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-300">
                   <Heart size={20} className="text-gray-700" />
                 </Link>
-                <Link to="/Profile" className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full hover:shadow-lg transition-all duration-300">
+                <Link to="/Profile" className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-full hover:shadow-lg transition-all duration-300">
                   <User size={18} />
                   <span className="font-medium">Profile</span>
                 </Link>
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <Link to="/Login" className="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300">Login</Link>
-                <Link to="/Signup" className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium">Sign Up</Link>
+                <Link to="/Login" className={location.pathname == "/Login" ? "text-blue-500 hover:text-indigo-600 font-medium transition-colors duration-300" : "text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-300"}>Login</Link>
+                <Link to="/Signup" className="px-5 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium">Sign Up</Link>
               </div>
             )}
           </div>
@@ -104,7 +107,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link to="/Login" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Login</Link>
-                  <Link to="/Signup" className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-center font-medium">Sign Up</Link>
+                  <Link to="/Signup" className="px-4 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-lg text-center font-medium">Sign Up</Link>
                 </>
               )}
             </div>

@@ -1,8 +1,16 @@
 import { Route, Routes } from "react-router-dom"
 import Navbar from "./components/Navbar"
+import Footer from "./components/Footer"
 import NotFound from "./Pages/NotFound"
-
-
+import Signup from "./Pages/Signup"
+import Home from "./Pages/Home"
+import Collection from "./Pages/Collection"
+import About from "./Pages/About"
+import Contact from "./Pages/Contact"
+import Login from "./Pages/Login"
+import Profile from "./Pages/Profile"
+import ForgotPassword from "./Pages/ForgotPassword"
+import Terms from "./Pages/Terms"
 
 const app = () => {
 
@@ -11,16 +19,19 @@ const app = () => {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<div>hello, from home</div>} />
-        <Route path="/Collection" element={<div>hello, from collection</div>} />
-        <Route path="/About" element={<div>hello, from About</div>} />
-        <Route path="/Contact" element={<div>hello, from Contact</div>} />
-        <Route path="/Login" element={<div>hello, from Login</div>} />
-        <Route path="/Signup" element={<div>hello, from Signup</div>} />
-        <Route path="/Profile" element={<div>hello, from Profile</div>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/Collection" element={<Collection />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/Contact" element={<Contact />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="/Terms" element={<Terms />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
+      <Footer />
     </>
   )
 

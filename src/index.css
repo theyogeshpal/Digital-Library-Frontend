@@ -1,1 +1,114 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --navy: #1e3a5f;
+    --forest: #2d5016;
+    --burgundy: #800020;
+    --cream: #f5f5dc;
+    --beige: #f5f5dc;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateY(-100vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: linear-gradient(135deg, rgba(245, 245, 220, 0.3), rgba(245, 245, 220, 0.1));
+  border-radius: 50%;
+  animation: float linear infinite;
+  box-shadow: 0 0 20px rgba(245, 245, 220, 0.3);
+}
+
+.bubble:nth-child(1) {
+  width: 80px;
+  height: 80px;
+  left: 10%;
+  animation-duration: 8s;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  width: 60px;
+  height: 60px;
+  left: 20%;
+  animation-duration: 10s;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  left: 30%;
+  animation-duration: 12s;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(4) {
+  width: 70px;
+  height: 70px;
+  left: 40%;
+  animation-duration: 9s;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(5) {
+  width: 90px;
+  height: 90px;
+  left: 50%;
+  animation-duration: 11s;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(6) {
+  width: 50px;
+  height: 50px;
+  left: 60%;
+  animation-duration: 7s;
+  animation-delay: 5s;
+}
+
+.bubble:nth-child(7) {
+  width: 110px;
+  height: 110px;
+  left: 70%;
+  animation-duration: 13s;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(8) {
+  width: 65px;
+  height: 65px;
+  left: 80%;
+  animation-duration: 10s;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(9) {
+  width: 85px;
+  height: 85px;
+  left: 90%;
+  animation-duration: 9s;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(10) {
+  width: 75px;
+  height: 75px;
+  left: 15%;
+  animation-duration: 11s;
+  animation-delay: 6s;
+}
