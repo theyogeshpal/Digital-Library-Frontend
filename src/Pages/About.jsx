@@ -160,7 +160,7 @@ const About = () => {
         <div className="bg-gradient-to-br from-indigo-900 via-indigo-950 to-teal-900 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-[0_32px_64px_-16px_rgba(30,41,59,0.3)]">
           <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
-            <img src="../public/logo/horizontal-logo.png" className="w-100 invert mx-auto mb-8 text-teal-400" />
+            <img src="logo/horizontal-logo.png" className="w-100 invert mx-auto mb-8 text-teal-400" />
             <h2 className="text-4xl md:text-5xl font-black mb-8 italic">Ready to Begin Your Fellowship?</h2>
             <p className="text-xl opacity-80 mb-10 max-w-2xl mx-auto font-light">
               Join thousands of scholars and access the world's finest digital collection.
