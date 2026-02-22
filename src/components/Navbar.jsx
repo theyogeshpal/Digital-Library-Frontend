@@ -90,6 +90,7 @@ const Navbar = () => {
               </div>
             </form>
             <div className="flex flex-col gap-2">
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Home</Link>
               <Link to="/Collection" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Collection</Link>
               <Link to="/About" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">About</Link>
               <Link to="/Contact" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors duration-300">Contact</Link>
