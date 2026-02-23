@@ -9,7 +9,7 @@ const Collection = () => {
 
   const categories = ['All', 'Academic', 'Fiction', 'Science', 'History', 'Philosophy', 'Engineering'];
 
-  const books = useMemo(() => [
+  const books =  [
     {
       id: 1,
       title: "The Architecture of Logic",
@@ -90,7 +90,7 @@ const Collection = () => {
       image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80",
       description: "A gripping tale of mystery set in a world where shadows hold the key to the truth."
     }
-  ], []);
+  ];
 
   const filteredBooks = useMemo(() => {
     return books.filter(book => {
