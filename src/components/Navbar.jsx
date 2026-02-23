@@ -6,13 +6,9 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const [isLoggedIn, setisLoggedIn] = useState(false); // Replace with actual auth state
+  const isLoggedIn = localStorage.getItem('Username') ? true : false; // Replace with actual auth state
   const location = useLocation()
 
-  const userexist = localStorage.getItem('Username')
-  if(userexist){
-    setisLoggedIn(true)
-  }
 
   const handleSearch = (e) => {
     e.preventDefault();
