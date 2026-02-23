@@ -24,7 +24,7 @@ const Signup = () => {
     }
     // console.log(formData);
 
-    const res = await axios.post('http://localhost:3000/api/user', formData)
+    const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/user', formData)
     console.log(res.data)
     
     navigate("/Login")
