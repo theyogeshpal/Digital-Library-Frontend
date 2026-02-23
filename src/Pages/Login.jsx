@@ -20,7 +20,7 @@ const Login = () => {
     // console.log('Login attempt:', formData);
     
     const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/user/login', formData);
-    console.log(res.data);
+    // console.log(res.data);
 
     localStorage.setItem("Username",res.data.user)
 
