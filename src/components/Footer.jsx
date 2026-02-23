@@ -36,12 +36,12 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-4">
                             {[
-                                { name: 'Home', path: '/' },
-                                { name: 'About Us', path: '/About' },
-                                { name: 'Collection', path: '/Collection' },
-                                { name: 'Contact Us', path: '/Contact' }
+                                { id:1, name: 'Home', path: '/' },
+                                { id:2, name: 'About Us', path: '/About' },
+                                { id:3, name: 'Collection', path: '/Collection' },
+                                { id:4, name: 'Contact Us', path: '/Contact' }
                             ].map((link) => (
-                                <li key={link}>
+                                <li key={link.id}>
                                     <Link to={link.path} className="hover:text-teal-400 transition-colors duration-300 flex items-center gap-2 group text-sm">
                                         <span className="w-1.5 h-1.5 bg-gray-700 rounded-full group-hover:bg-teal-400 transition-all"></span>
                                         {link.name}

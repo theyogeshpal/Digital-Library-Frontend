@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, BookOpen, Lock, Eye, EyeOff, Calendar, AtSign } from 'lucide-react';
+import axios from 'axios';
 
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     username: '',
     email: '',
     dob: '',
@@ -15,14 +16,19 @@ const Signup = () => {
     confirmPassword: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log(formData);
-    navigate('/login');
+    // console.log(formData);
+
+    const res = await axios.post('http://localhost:3000/api/user', formData)
+    console.log(res.data)
+    
+    navigate("/Login")
+  
   };
 
   return (
@@ -46,13 +52,13 @@ const Signup = () => {
             <div className="relative group">
               <User className="absolute left-3 top-3 text-gray-400 group-focus-within:text-teal-600 transition-colors" size={20} />
               <input
-                name="fullName"
+                name="fullname"
                 type="text"
                 required
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-0 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 placeholder="Full Name"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                value={formData.fullname}
+                onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
               />
             </div>
             <div className="relative group">

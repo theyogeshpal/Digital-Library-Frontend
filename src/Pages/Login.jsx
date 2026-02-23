@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, BookOpen } from 'lucide-react';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,10 +15,15 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Add login logic here
+    // console.log('Login attempt:', formData);
+    
+    const res = await axios.post('http://localhost:3000/api/user/login', formData);
+    console.log(res.data);
+
+    localStorage.setItem("Username",res.data.user)
+
     navigate('/Profile');
   };
 
