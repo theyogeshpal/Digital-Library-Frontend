@@ -6,9 +6,9 @@ const NotFound = () => {
   const [currentImage, setCurrentImage] = useState(0);
 
   const images = [
-    "../public/404first.avif",
-    "../public/404second.avif",
-    "../public/404third.avif"
+    "404first.avif",
+    "404second.avif",
+    "404third.avif"
   ];
 
   useEffect(() => {

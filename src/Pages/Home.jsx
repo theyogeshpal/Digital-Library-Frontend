@@ -95,7 +95,7 @@ const Home = () => {
             <h2 className="text-5xl font-black text-indigo-950 mb-6 underline decoration-teal-500 decoration-8 underline-offset-[12px] text-center lg:text-start ">Archives.</h2>
             <p className="text-xl text-gray-500 text-center lg:text-start ">Curated collections spanning across centuries of human intelligence.</p>
           </div>
-          <Link to="/Catalogue" className="text-indigo-900 font-black flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b-4 border-teal-100 mx-auto lg:mx-0  ">
+          <Link to="/Collection" className="text-indigo-900 font-black flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b-4 border-teal-100 mx-auto lg:mx-0  ">
             View All Collections <ArrowRight />
           </Link>
         </div>
