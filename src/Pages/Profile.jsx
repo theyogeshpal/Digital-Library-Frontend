@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield } from 'lucide-react';
+import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield, Upload, X } from 'lucide-react';
 import axios from 'axios'
+import Swal from 'sweetalert2';
 
 const Profile = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [userdata, setuserdata] = useState({
     email: '',
     fullname: '',
     dob : '',
-    joiningdate : ''
+    joiningdate : '',
+    profilepic : ''
   })
 
   useEffect(() => {
@@ -39,7 +44,8 @@ useEffect(() => {
         email: res.data.data[0].email,
         fullname: res.data.data[0].fullname,
         dob : res.data.data[0].dob,
-        joiningdate : res.data.data[0].joiningdate
+        joiningdate : res.data.data[0].joiningdate,
+        profilepic : res.data.data[0].photo
       });
     } catch (e) {
       console.log(e);
@@ -53,6 +59,81 @@ useEffect(() => {
   const handleLogout = () => {
     localStorage.removeItem('Username');
     navigate('/Login');
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageUpdate = async () => {
+    if (!imageFile) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Image Selected',
+        text: 'Please select an image first',
+        confirmButtonColor: '#4F46E5'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Updating Profile Picture...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const formData = new FormData();
+      formData.append('photo', imageFile);
+      formData.append('username', username);
+
+      await axios.put(
+        'https://digital-library-backend-jesb.onrender.com/api/update/photo',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Profile Picture Updated!',
+        text: 'Your profile picture has been updated successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowModal(false);
+      setImageFile(null);
+      setImagePreview('');
+      
+      // Refresh user data
+      const res = await axios.get(
+        `https://digital-library-backend-jesb.onrender.com/api/user/${username}`
+      );
+      setuserdata({
+        email: res.data.data[0].email,
+        fullname: res.data.data[0].fullname,
+        dob: res.data.data[0].dob,
+        joiningdate: res.data.data[0].joiningdate,
+        profilepic: res.data.data[0].photo
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: error.response?.data?.message || 'Failed to update profile picture',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
   };
 
   const stats = [
@@ -85,9 +166,16 @@ useEffect(() => {
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6 -mt-25">
               <div className="relative group">
                 <div className="w-52 h-52 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-white text-5xl font-black shadow-2xl ring-4 ring-white">
-                  {username.charAt(0).toUpperCase()}
+                  {userdata.profilepic ? (
+                    <img src={userdata.profilepic} alt="Profile" className="w-full h-full rounded-3xl object-cover" />
+                  ) : (
+                    username.charAt(0).toUpperCase()
+                  )}
                 </div>
-                <button className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 group">
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 group"
+                >
                   <Edit2 size={18} className="text-white" />
                 </button>
               </div>
@@ -218,6 +306,68 @@ useEffect(() => {
         </div>
 
       </div>
+
+      {/* Image Update Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+            <button
+              onClick={() => {
+                setShowModal(false);
+                setImageFile(null);
+                setImagePreview('');
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 mb-6">Update Profile Picture</h2>
+
+            <div className="mb-6">
+              <div className="w-full h-64 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center overflow-hidden mb-4">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : userdata.profilepic ? (
+                  <img src={userdata.profilepic} alt="Current" className="w-full h-full object-cover" />
+                ) : (
+                  <Upload size={48} className="text-indigo-400" />
+                )}
+              </div>
+
+              <label className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all cursor-pointer font-semibold">
+                <Upload size={20} />
+                Choose Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setImageFile(null);
+                  setImagePreview('');
+                }}
+                className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleImageUpdate}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
