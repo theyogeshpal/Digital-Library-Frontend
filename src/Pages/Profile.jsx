@@ -6,10 +6,16 @@ import axios from 'axios'
 const Profile = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [userdata, setuserdata] = useState({
+    email: '',
+    fullname: '',
+    dob : '',
+    joiningdate : ''
+  })
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('Username');
-    console.log('Stored Username:', storedUsername);
+    // console.log('Stored Username:', storedUsername);
     if (!storedUsername) {
       navigate('/Login');
     } else {
@@ -28,7 +34,13 @@ useEffect(() => {
       const res = await axios.get(
         `https://digital-library-backend-jesb.onrender.com/api/user/${username}`
       );
-      console.log(res);
+      // console.log(res.data.data[0]);
+      setuserdata({
+        email: res.data.data[0].email,
+        fullname: res.data.data[0].fullname,
+        dob : res.data.data[0].dob,
+        joiningdate : res.data.data[0].joiningdate
+      });
     } catch (e) {
       console.log(e);
     }
@@ -81,7 +93,7 @@ useEffect(() => {
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-4xl font-black text-gray-900 mb-2">{username}</h1>
+                <h1 className="text-4xl font-black text-gray-900 mb-2">{userdata.fullname}</h1>
                 <p className="text-gray-600 mb-4 flex items-center gap-2 justify-center md:justify-start">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   Book Enthusiast • Active Reader
@@ -89,11 +101,11 @@ useEffect(() => {
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                   <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
                     <Mail size={16} className="text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-700">{username}@example.com</span>
+                    <span className="text-sm font-medium text-gray-700">{userdata.email}</span>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
                     <Calendar size={16} className="text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-700">Joined Jan 2024</span>
+                    <span className="text-sm font-medium text-gray-700">Borned {userdata.dob}</span>
                   </div>
                 </div>
               </div>
