@@ -93,7 +93,7 @@ useEffect(() => {
       formData.append('photo', imageFile);
       formData.append('username', username);
 
-      await axios.put(
+      await axios.post(
         'https://digital-library-backend-jesb.onrender.com/api/update/photo',
         formData
       );
