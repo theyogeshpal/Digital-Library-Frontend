@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield } from 'lucide-react';
+import axios from 'axios'
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -8,12 +9,34 @@ const Profile = () => {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('Username');
+    console.log('Stored Username:', storedUsername);
     if (!storedUsername) {
       navigate('/Login');
     } else {
       setUsername(storedUsername);
     }
   }, [navigate]);
+
+
+
+useEffect(() => {
+
+  if(!username) return; // agar username nahi hai toh API mat call karo
+
+  const getdetails = async () => {
+    try {
+      const res = await axios.get(
+        `https://digital-library-backend-jesb.onrender.com/api/user/${username}`
+      );
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  getdetails();
+
+}, [username]);   // 👈 IMPORTANT
 
   const handleLogout = () => {
     localStorage.removeItem('Username');
@@ -77,7 +100,7 @@ const Profile = () => {
 
               <button 
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-2xl hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 font-semibold"
+                className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-2xl hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 font-semibold"
               >
                 <LogOut size={18} />
                 Logout

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, BookOpen } from 'lucide-react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,14 +18,38 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log('Login attempt:', formData);
     
-    const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/user/login', formData);
-    // console.log(res.data);
+    Swal.fire({
+      title: 'Verifying Details...',
+      text: 'Please wait while we verify your credentials',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
-    localStorage.setItem("Username",res.data.user)
-
-    navigate('/Profile');
+    try {
+      const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/user/login', formData);
+      
+      localStorage.setItem("Username", res.data.user);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful!',
+        text: 'Welcome back to Core Archive',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        navigate('/Profile');
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: error.response?.data?.message || 'Invalid username or password',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
   };
 
   return (
