@@ -95,12 +95,7 @@ useEffect(() => {
 
       await axios.put(
         'https://digital-library-backend-jesb.onrender.com/api/update/photo',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
+        formData
       );
 
       Swal.fire({
