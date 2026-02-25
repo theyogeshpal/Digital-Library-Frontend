@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield, Upload, X } from 'lucide-react';
+import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield, Upload, X, AtSign } from 'lucide-react';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 
@@ -8,14 +8,22 @@ const Profile = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [editFormData, setEditFormData] = useState({
+    username: '',
+    fullname: '',
+    email: '',
+    bio: ''
+  });
   const [userdata, setuserdata] = useState({
     email: '',
     fullname: '',
     dob : '',
     joiningdate : '',
-    profilepic : ''
+    profilepic : '',
+    bio: ''
   })
 
   useEffect(() => {
@@ -45,7 +53,8 @@ useEffect(() => {
         fullname: res.data.data[0].fullname,
         dob : res.data.data[0].dob,
         joiningdate : res.data.data[0].joiningdate,
-        profilepic : res.data.data[0].photo
+        profilepic : res.data.data[0].photo,
+        bio: res.data.data[0].bio
       });
     } catch (e) {
       console.log(e);
@@ -119,13 +128,71 @@ useEffect(() => {
         fullname: res.data.data[0].fullname,
         dob: res.data.data[0].dob,
         joiningdate: res.data.data[0].joiningdate,
-        profilepic: res.data.data[0].photo
+        profilepic: res.data.data[0].photo,
+        bio: res.data.data[0].bio
       });
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Update Failed',
         text: error.response?.data?.message || 'Failed to update profile picture',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
+  };
+
+  const handleEditProfile = () => {
+    setEditFormData({
+      username: username,
+      fullname: userdata.fullname,
+      email: userdata.email,
+      bio: userdata.bio || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleProfileUpdate = async () => {
+    Swal.fire({
+      title: 'Updating Profile...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      await axios.put(
+        "https://digital-library-backend-jesb.onrender.com/api/user/update",
+        editFormData
+      );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Profile Updated!',
+        text: 'Your profile has been updated successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowEditModal(false);
+      
+      // Refresh user data
+      const res = await axios.get(
+        `https://digital-library-backend-jesb.onrender.com/api/user/${username}`
+      );
+      setuserdata({
+        email: res.data.data[0].email,
+        fullname: res.data.data[0].fullname,
+        dob: res.data.data[0].dob,
+        joiningdate: res.data.data[0].joiningdate,
+        profilepic: res.data.data[0].photo,
+        bio: res.data.data[0].bio
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: error.response?.data?.message || 'Failed to update profile',
         confirmButtonColor: '#4F46E5'
       });
     }
@@ -179,12 +246,12 @@ useEffect(() => {
                 <h1 className="text-4xl font-black text-gray-900 mb-2">{userdata.fullname}</h1>
                 <p className="text-gray-600 mb-4 flex items-center gap-2 justify-center md:justify-start">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Book Enthusiast • Active Reader
+                  <span> {userdata.bio}</span>
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                   <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
-                    <Mail size={16} className="text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-700">{userdata.email}</span>
+                    <AtSign size={16} className="text-indigo-600" />
+                    <span className="text-sm font-medium text-gray-700">{username}</span>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
                     <Calendar size={16} className="text-indigo-600" />
@@ -254,7 +321,10 @@ useEffect(() => {
               <h2 className="text-xl font-black text-gray-900 mb-6">Quick Actions</h2>
               
               <div className="space-y-3">
-                <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 group">
+                <button 
+                  onClick={handleEditProfile}
+                  className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 group"
+                >
                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Edit2 size={18} className="text-white" />
                   </div>
@@ -358,6 +428,83 @@ useEffect(() => {
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
               >
                 Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 mb-6">Edit Profile</h2>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <input
+                  type="text"
+                  value={editFormData.username}
+                  onChange={(e) => setEditFormData({...editFormData, username: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={editFormData.fullname}
+                  onChange={(e) => setEditFormData({...editFormData, fullname: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Bio</label>
+                <textarea
+                  value={editFormData.bio}
+                  onChange={(e) => setEditFormData({...editFormData, bio: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  placeholder="Tell us about yourself"
+                  rows="3"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleProfileUpdate}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+              >
+                Save Changes
               </button>
             </div>
           </div>

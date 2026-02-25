@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, BookOpen, Heart, ArrowRight, Star, SlidersHorizontal, Grid, List as ListIcon, Loader2, Bookmark } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Collection = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('Latest');
@@ -221,7 +223,10 @@ const Collection = () => {
                     <Heart size={20} />
                   </button>
                   <div className="absolute bottom-4 left-4 right-4 transform translate-y-[20px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <button className="w-full py-2 bg-teal-500 text-indigo-950 rounded-lg text-sm font-black shadow-xl">
+                    <button 
+                      onClick={() => navigate(`/book/${book.id}`)}
+                      className="w-full py-2 bg-teal-500 text-indigo-950 rounded-lg text-sm font-black shadow-xl"
+                    >
                       View Details
                     </button>
                   </div>

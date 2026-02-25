@@ -11,6 +11,7 @@ import Login from "./Pages/Login"
 import Profile from "./Pages/Profile"
 import ForgotPassword from "./Pages/ForgotPassword"
 import Terms from "./Pages/Terms"
+import BookDetails from "./Pages/BookDetails"
 import ScrollToTop from "./components/ScrollToTop"
 
 const app = () => {
@@ -23,6 +24,7 @@ const app = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Collection" element={<Collection />} />
+        <Route path="/book/:id" element={<BookDetails />} />
         <Route path="/About" element={<About />} />
         <Route path="/Contact" element={<Contact />} />
         <Route path="/Login" element={<Login />} />

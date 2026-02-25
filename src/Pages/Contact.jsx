@@ -1,5 +1,7 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageSquare, User, Clock, CheckCircle2, Sparkles } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,17 +16,42 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert('Message sent successfully!');
 
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    })
+    Swal.fire({
+      title: 'Sending Message...',
+      text: 'Please wait while we process your inquiry',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      await axios.post('https://digital-library-backend-jesb.onrender.com/api/contact', formData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Message Sent Successfully!',
+        text: 'Thank you for contacting us. We will respond within one business day.',
+        confirmButtonColor: '#4F46E5'
+      });
+
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to Send Message',
+        text: error.response?.data?.message || 'Something went wrong. Please try again.',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
   };
 
   const contactInfo = [
@@ -136,7 +163,7 @@ const Contact = () => {
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-indigo-900/40 uppercase tracking-widest ml-1">Full Name</label>
+                      <label className="text-sm font-black text-indigo-900/40 uppercase tracking-widest ml-1">Full Name <span className='text-red-500'>*</span></label>
                       <div className="relative group">
                         <User className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${focusedField === 'name' ? 'text-indigo-700' : 'text-gray-400 group-hover:text-indigo-400'}`} size={20} />
                         <input
@@ -154,7 +181,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-black text-indigo-900/40 uppercase tracking-widest ml-1">Institutional Email</label>
+                      <label className="text-sm font-black text-indigo-900/40 uppercase tracking-widest ml-1"> Email <span className='text-red-500'>*</span></label>
                       <div className="relative group">
                         <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${focusedField === 'email' ? 'text-teal-600' : 'text-gray-400 group-hover:text-teal-400'}`} size={20} />
                         <input
