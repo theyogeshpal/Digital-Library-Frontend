@@ -111,7 +111,12 @@ const BookDetails = () => {
                   >
                     <Share2 size={18} />
                   </button>
-                  <a target='_blank' download={`${book.title}.pdf`} href={book.bookPdf} className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                  <a 
+                    target='_blank' 
+                    rel='noopener noreferrer'
+                    href={book.bookPdf} 
+                    className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all"
+                  >
                     <Download size={18} />
                   </a>
                 </div>
@@ -212,11 +217,17 @@ const BookDetails = () => {
               </button>
             </div>
             <div className="flex-1 overflow-hidden">
-              <iframe
-                src={book.bookPdf}
+              <object
+                data={book.bookPdf}
+                type="application/pdf"
                 className="w-full h-full"
-                title={book.title}
-              />
+              >
+                <iframe
+                  src={`https://docs.google.com/viewer?url=${encodeURIComponent(book.bookPdf)}&embedded=true`}
+                  className="w-full h-full"
+                  title={book.title}
+                />
+              </object>
             </div>
           </div>
         </div>
