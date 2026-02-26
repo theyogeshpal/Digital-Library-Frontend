@@ -3,6 +3,7 @@ import { Search, Filter, BookOpen, Heart, ArrowRight, Star, SlidersHorizontal, G
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Collection = () => {
   const navigate = useNavigate();
@@ -11,9 +12,34 @@ const Collection = () => {
   const [sortBy, setSortBy] = useState('Latest');
   const [viewMode, setViewMode] = useState('grid');
 
-  const categories = ['All', 'Academic', 'Fiction', 'Science', 'History', 'Philosophy', 'Engineering'];
-
   const [books, setBooks] = useState([])
+
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(books.map(book => book.category))];
+    return ['All', ...uniqueCategories.sort()];
+  }, [books]);
+
+  const checkLoginAndNavigate = (bookId) => {
+    const username = localStorage.getItem('username');
+    
+    if (!username) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Login Required',
+        text: 'Please login to view book details',
+        confirmButtonText: 'Go to Login',
+        confirmButtonColor: '#4F46E5',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+    } else {
+      navigate(`/book/${bookId}`);
+    }
+  };
 
   useEffect(() => {
     const getBooks = async () => {
@@ -76,7 +102,7 @@ const Collection = () => {
               </span>
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-indigo-400 rounded-full"></span>
-                7 Main Categories
+                {categories.length - 1} Main Categories
               </span>
             </div>
           </div>
@@ -158,7 +184,7 @@ const Collection = () => {
                   </button>
                   <div className="absolute bottom-3 left-3 right-3 transform translate-y-[20px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button 
-                      onClick={() => navigate(`/book/${book._id}`)}
+                      onClick={() => checkLoginAndNavigate(book._id)}
                       className="w-full py-2 bg-teal-500 text-indigo-950 rounded-lg text-xs font-black shadow-xl"
                     >
                       View Details
@@ -194,7 +220,9 @@ const Collection = () => {
                       <BookOpen size={12} />
                       {book.reviews}
                     </div>
-                    <button className="flex items-center gap-1 text-indigo-600 font-bold text-xs hover:gap-2 transition-all">
+                    <button 
+                    onClick={() => checkLoginAndNavigate(book._id)}
+                    className="flex items-center gap-1 text-indigo-600 font-bold text-xs hover:gap-2 transition-all">
                       Read
                       <ArrowRight size={12} />
                     </button>

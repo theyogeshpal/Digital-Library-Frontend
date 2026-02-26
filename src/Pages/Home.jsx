@@ -1,32 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookOpen, Search, Star, ArrowRight, Shield, Zap, Award, Sparkles, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
 
-  const categories = [
-    {
-      title: 'Digital Archives',
-      count: '4,200+ Volumes',
-      color: 'indigo',
-      icon: Shield,
-      image: 'digital-library.png'
-    },
-    {
-      title: 'Scholarly Volumes',
-      count: '12,500+ Volumes',
-      color: 'teal',
-      icon: Zap,
-      image: 'scolar.png'
-    },
-    {
-      title: 'Classic Literature',
-      count: '1,800+ Classics',
-      color: 'emerald',
-      icon: Award,
-      image: 'litrature.png'
-    }
-  ];
+  const [books, setBooks] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const getBooks = async () => {
+      try {
+        const response = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show');
+        const allBooks = response.data.data;
+        setBooks(allBooks);
+        
+        // Extract unique categories with their first book image
+        const uniqueCategories = [...new Set(allBooks.map(book => book.category))];
+        const categoryData = uniqueCategories.map(category => {
+          const categoryBooks = allBooks.filter(book => book.category === category);
+          return {
+            title: category,
+            count: `${categoryBooks.length} Books`,
+            image: categoryBooks[0]?.image || 'digital-library.png'
+          };
+        });
+        setCategories(categoryData);
+      } catch (error) {
+        console.error('Error fetching books:', error);
+      }
+    };
+    getBooks();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -100,34 +105,43 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {categories.map((cat, i) => (
-            <div key={i} className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:-translate-y-4">
-              {/* Background Image */}
-              <img
-                src={cat.image}
-                alt={cat.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125"
-              />
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {categories.map((cat, i) => {
+            const colors = ['indigo', 'teal', 'emerald', 'purple', 'blue', 'cyan'];
+            const color = colors[i % colors.length];
+            
+            return (
+              <div key={i} className="group relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl transition-all duration-700 hover:-translate-y-2">
+                {/* Background Image */}
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125"
+                />
 
-              {/* Overlay Gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-700 opacity-80 group-hover:opacity-90 ${cat.color === 'indigo' ? 'from-indigo-950/90 via-indigo-900/60 to-transparent' :
-                cat.color === 'teal' ? 'from-teal-950/90 via-teal-900/60 to-transparent' :
-                  'from-emerald-950/90 via-emerald-900/60 to-transparent'
+                {/* Overlay Gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-700 opacity-80 group-hover:opacity-90 ${
+                  color === 'indigo' ? 'from-indigo-950/90 via-indigo-900/60 to-transparent' :
+                  color === 'teal' ? 'from-teal-950/90 via-teal-900/60 to-transparent' :
+                  color === 'emerald' ? 'from-emerald-950/90 via-emerald-900/60 to-transparent' :
+                  color === 'purple' ? 'from-purple-950/90 via-purple-900/60 to-transparent' :
+                  color === 'blue' ? 'from-blue-950/90 via-blue-900/60 to-transparent' :
+                  'from-cyan-950/90 via-cyan-900/60 to-transparent'
                 }`}></div>
 
-              <div className="relative h-full p-10 flex flex-col justify-between text-white z-10">
-                <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 border border-white/20">
-                  <cat.icon size={32} className="text-white" />
-                </div>
-                <div>
-                  <div className="text-teal-400 font-bold mb-2 uppercase tracking-widest text-sm">{cat.count}</div>
-                  <h3 className="text-4xl font-black mb-6 leading-tight">{cat.title}</h3>
-                  <div className="w-12 h-1.5 bg-teal-500 rounded-full group-hover:w-full transition-all duration-700"></div>
+                <div className="relative h-full p-6 flex flex-col justify-between text-white z-10">
+                  <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 border border-white/20">
+                    <BookOpen size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="text-teal-400 font-bold mb-1 uppercase tracking-widest text-xs">{cat.count}</div>
+                    <h3 className="text-2xl font-black mb-3 leading-tight">{cat.title}</h3>
+                    <div className="w-8 h-1 bg-teal-500 rounded-full group-hover:w-full transition-all duration-700"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
