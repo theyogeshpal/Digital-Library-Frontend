@@ -55,39 +55,42 @@ const Contact = () => {
   };
 
   const contactInfo = [
-    { icon: Mail, title: 'Email Us', info: 'scholar@corearchive.com', link: 'mailto:scholar@corearchive.com', color: 'indigo' },
-    { icon: Phone, title: 'Call Us', info: '+1 (234) 567-890', link: 'tel:+1234567890', color: 'purple' },
+    { icon: Mail, title: 'Email Us', info: 'corearchive1@gmail.com', link: 'mailto:corearchive1@gmail.com', color: 'indigo' },
+    { icon: Phone, title: 'Call Us', info: '+91 78170 95043', link: 'tel:+917817095043', color: 'purple' },
     { icon: MapPin, title: 'Visit Us', info: '123 Library St, Book City', link: '#', color: 'pink' },
     { icon: Clock, title: 'Working Hours', info: 'Mon-Fri: 9AM - 6PM', link: '#', color: 'blue' }
   ];
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden lg:px-20">
-      {/* Mesh Gradient Background */}
-      <div className="absolute inset-0 bg-[#fafafa]">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-emerald-100/30 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Hero Section */}
+    <div className="min-h-screen bg-[#fafafa] relative overflow-hidden">
+      {/* Hero Section with Background */}
       <div className="relative pt-24 pb-16">
-        <div className="container mx-auto px-4 text-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 left-0 right-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80" 
+            alt="Contact Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 via-purple-900/85 to-teal-900/90"></div>
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-100 text-teal-600 mb-8 animate-bounce">
             <Sparkles size={18} />
             <span className="text-sm font-semibold tracking-wide uppercase">Elite Support</span>
           </div>
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight text-indigo-950">
-            Let's <span className="bg-gradient-to-r from-indigo-700 to-teal-600 bg-clip-text text-transparent">Connect</span>
+          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight text-white">
+            Let's <span className="bg-gradient-to-r from-teal-300 to-emerald-300 bg-clip-text text-transparent">Connect</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto leading-relaxed font-light">
             Need assistance with your study or library access? We're here to help you navigate the collection.
           </p>
         </div>
       </div>
 
       {/* Contact Info Cards with Glassmorphism */}
-      <div className="container mx-auto px-4 mb-20 relative z-10">
+      <div className="container mx-auto px-4 mt-12 mb-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {contactInfo.map((item, index) => (
             <a
@@ -112,7 +115,7 @@ const Contact = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 pb-32 relative z-10">
+      <div className="container mx-auto px-4 pb-32 relative z-10 bg-[#fafafa]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
             {/* Left Side - Info */}

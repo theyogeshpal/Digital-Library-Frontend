@@ -40,12 +40,14 @@ const About = () => {
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Dynamic Hero Section */}
       <div className="relative min-h-[80vh] flex items-center justify-center pt-20 pb-16 overflow-hidden">
-        {/* Mesh Gradient Background */}
-        <div className="absolute inset-0 bg-[#fafafa]">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
-          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-100/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-emerald-100/30 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-4000"></div>
-
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&q=80" 
+            alt="Library Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 via-purple-900/85 to-teal-900/90"></div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -54,10 +56,10 @@ const About = () => {
               <Sparkles size={18} />
               <span className="text-sm font-semibold tracking-wide uppercase">Elite Learning</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight text-indigo-950">
-              Behind the <span className="bg-gradient-to-r from-indigo-700 to-teal-600 bg-clip-text text-transparent">Pages</span>
+            <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight text-white">
+              Behind the <span className="bg-gradient-to-r from-teal-300 to-emerald-300 bg-clip-text text-transparent">Pages</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-gray-200 mb-12 leading-relaxed font-light">
               We're building the infrastructure for tomorrow's knowledge. A digital sanctuary for serious readers and life-long learners.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6">

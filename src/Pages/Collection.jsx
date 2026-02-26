@@ -11,6 +11,8 @@ const Collection = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('Latest');
   const [viewMode, setViewMode] = useState('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 20;
 
   const [books, setBooks] = useState([])
 
@@ -62,6 +64,11 @@ const Collection = () => {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedCategory, books]);
+
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+  const startIndex = (currentPage - 1) * booksPerPage;
+  const endIndex = startIndex + booksPerPage;
+  const currentBooks = filteredBooks.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-white">
@@ -164,7 +171,7 @@ const Collection = () => {
 
           {/* Books Grid */}
           <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6' : 'space-y-6'}>
-            {filteredBooks.map((book) => (
+            {currentBooks.map((book) => (
               <div
                 key={book._id}
                 className={`group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 will-change-transform ${viewMode === 'list' ? 'flex flex-col md:flex-row h-auto md:h-64' : ''
@@ -249,20 +256,24 @@ const Collection = () => {
             </div>
           )}
 
-          {/* Pagination Mockup */}
-          <div className="mt-16 flex items-center justify-center gap-2">
-            {[1, 2, 3, '...', 12].map((page, i) => (
-              <button
-                key={i}
-                className={`w-12 h-12 rounded-xl font-bold text-sm transition-all ${page === 1
-                  ? 'bg-indigo-900 text-white shadow-xl shadow-indigo-100'
-                  : 'bg-white text-gray-400 border border-gray-100 hover:border-indigo-100 hover:text-indigo-600'
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-16 flex items-center justify-center gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-12 h-12 rounded-xl font-bold text-sm transition-all ${
+                    page === currentPage
+                      ? 'bg-indigo-900 text-white shadow-xl shadow-indigo-100'
+                      : 'bg-white text-gray-400 border border-gray-100 hover:border-indigo-100 hover:text-indigo-600'
                   }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

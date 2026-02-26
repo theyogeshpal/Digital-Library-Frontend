@@ -13,11 +13,12 @@ import ForgotPassword from "./Pages/ForgotPassword"
 import Terms from "./Pages/Terms"
 import BookDetails from "./Pages/BookDetails"
 import ScrollToTop from "./components/ScrollToTop"
+import { DarkModeProvider } from "./context/DarkModeContext"
 
 const app = () => {
 
   return (
-    <>
+    <DarkModeProvider>
       <ScrollToTop />
       <Navbar />
 
@@ -36,7 +37,7 @@ const app = () => {
       </Routes>
 
       <Footer />
-    </>
+    </DarkModeProvider>
   )
 
 }

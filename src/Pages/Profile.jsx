@@ -3,12 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Calendar, BookOpen, Heart, Clock, Edit2, LogOut, Award, TrendingUp, Settings, Bell, Shield, Upload, X, AtSign } from 'lucide-react';
 import axios from 'axios'
 import Swal from 'sweetalert2';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { isDarkMode, setIsDarkMode } = useDarkMode();
   const [username, setUsername] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [editFormData, setEditFormData] = useState({
@@ -18,6 +29,7 @@ const Profile = () => {
     bio: ''
   });
   const [userdata, setuserdata] = useState({
+    _id: '',
     email: '',
     fullname: '',
     dob : '',
@@ -49,6 +61,7 @@ useEffect(() => {
       );
       // console.log(res.data.data[0]);
       setuserdata({
+        _id: res.data.data[0]._id,
         email: res.data.data[0].email,
         fullname: res.data.data[0].fullname,
         dob : res.data.data[0].dob,
@@ -64,6 +77,130 @@ useEffect(() => {
   getdetails();
 
 }, [username]);   // 👈 IMPORTANT
+
+  const handleChangePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Passwords do not match',
+        text: 'New password and confirm password must be the same',
+        confirmButtonColor: '#4F46E5'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Changing Password...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      await axios.put(
+        'https://digital-library-backend-jesb.onrender.com/api/user/change-password',
+        {
+          username: username,
+          oldPassword: passwordData.oldPassword,
+          newPassword: passwordData.newPassword
+        }
+      );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Changed!',
+        text: 'Your password has been updated successfully',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setShowChangePasswordModal(false);
+      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Change Failed',
+        text: error.response?.data?.message || 'Failed to change password',
+        confirmButtonColor: '#4F46E5'
+      });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    let timerInterval;
+    const result = await Swal.fire({
+      title: 'Delete Account?',
+      html: 'This action cannot be undone. All your data will be permanently deleted.<br><br>Please wait <b></b> seconds before confirming.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DC2626',
+      cancelButtonColor: '#6B7280',
+      confirmButtonText: 'Yes, delete my account',
+      cancelButtonText: 'Cancel',
+      allowOutsideClick: false,
+      didOpen: () => {
+        const confirmButton = Swal.getConfirmButton();
+        confirmButton.disabled = true;
+        confirmButton.style.opacity = '0.5';
+        confirmButton.style.cursor = 'not-allowed';
+        
+        let timeLeft = 60;
+        const b = Swal.getHtmlContainer().querySelector('b');
+        b.textContent = timeLeft;
+        
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          b.textContent = timeLeft;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            confirmButton.disabled = false;
+            confirmButton.style.opacity = '1';
+            confirmButton.style.cursor = 'pointer';
+            b.textContent = '0';
+          }
+        }, 1000);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: 'Deleting Account...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
+        await axios.delete(
+          `https://digital-library-backend-jesb.onrender.com/api/admin/user/${userdata._id}`
+        );
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Account Deleted',
+          text: 'Your account has been permanently deleted',
+          timer: 2000,
+          showConfirmButton: false
+        });
+
+        localStorage.removeItem('Username');
+        navigate('/Signup');
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: error.response?.data?.message || 'Failed to delete account',
+          confirmButtonColor: '#4F46E5'
+        });
+      }
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('Username');
@@ -200,9 +337,8 @@ useEffect(() => {
 
   const stats = [
     { label: 'Books Read', value: '12', icon: BookOpen, gradient: 'from-blue-500 to-cyan-500' },
-    { label: 'Wishlist', value: '8', icon: Heart, gradient: 'from-pink-500 to-rose-500' },
-    { label: 'Reading Time', value: '24h', icon: Clock, gradient: 'from-purple-500 to-indigo-500' },
-    { label: 'Achievements', value: '5', icon: Award, gradient: 'from-amber-500 to-orange-500' }
+    { label: 'Wishlist', value: '8', icon: Heart, gradient: 'from-pink-500 to-rose-500' }
+
   ];
 
   const activities = [
@@ -212,7 +348,7 @@ useEffect(() => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-4 transition-colors duration-300">
       <div className="container mx-auto max-w-6xl">
         
         {/* Premium Header with Cover */}
@@ -224,10 +360,13 @@ useEffect(() => {
           </div>
 
           {/* Profile Info */}
-          <div className="bg-white/95 backdrop-blur-xl p-8">
+          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-8 transition-colors duration-300">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6 -mt-25">
               <div className="relative group">
-                <div className="w-52 h-52 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-white text-5xl font-black shadow-2xl ring-4 ring-white">
+                <div 
+                  onClick={() => userdata.profilepic && setShowImageModal(true)}
+                  className="w-52 h-52 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center text-white text-5xl font-black shadow-2xl ring-4 ring-white cursor-pointer hover:scale-105 transition-transform"
+                >
                   {userdata.profilepic ? (
                     <img src={userdata.profilepic} alt="Profile" className="w-full h-full rounded-3xl object-cover" />
                   ) : (
@@ -243,19 +382,19 @@ useEffect(() => {
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-4xl font-black text-gray-900 mb-2">{userdata.fullname}</h1>
-                <p className="text-gray-600 mb-4 flex items-center gap-2 justify-center md:justify-start">
+                <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-2">{userdata.fullname}</h1>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 flex items-center gap-2 justify-center md:justify-start">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   <span> {userdata.bio}</span>
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
-                    <AtSign size={16} className="text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-700">{username}</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                    <AtSign size={16} className="text-indigo-600 dark:text-indigo-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{username}</span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
-                    <Calendar size={16} className="text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-700">Borned {userdata.dob}</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                    <Calendar size={16} className="text-indigo-600 dark:text-indigo-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Borned {userdata.dob}</span>
                   </div>
                 </div>
               </div>
@@ -277,34 +416,34 @@ useEffect(() => {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {stats.map((stat, index) => (
-                <div key={index} className="group bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+            <div className="grid grid-cols-2 gap-4">
+              {stats.map((stat, index) => ( 
+                <div key={index} className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                   <div className={`w-14 h-14 bg-gradient-to-br ${stat.gradient} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
                     <stat.icon size={26} className="text-white" />
                   </div>
-                  <div className="text-3xl font-black text-gray-900 mb-1">{stat.value}</div>
-                  <div className="text-gray-600 text-sm font-medium">{stat.label}</div>
+                  <div className="text-3xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
+                  <div className="text-gray-600 dark:text-gray-300 text-sm font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-gray-900">Recent Activity</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white">Recent Activity</h2>
                 <TrendingUp className="text-indigo-600" size={24} />
               </div>
               
               <div className="space-y-4">
                 {activities.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 bg-gradient-to-r from-gray-50 to-transparent rounded-2xl hover:from-indigo-50 transition-all duration-300 cursor-pointer group">
+                  <div key={index} className="flex items-start gap-4 p-4 bg-gradient-to-r from-gray-50 dark:from-gray-700 to-transparent rounded-2xl hover:from-indigo-50 dark:hover:from-indigo-900 transition-all duration-300 cursor-pointer group">
                     <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <activity.icon size={20} className="text-indigo-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-1">{activity.title}</h3>
-                      <p className="text-sm text-gray-500">{activity.time}</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{activity.title}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -317,8 +456,8 @@ useEffect(() => {
           <div className="space-y-8">
             
             {/* Quick Actions */}
-            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100">
-              <h2 className="text-xl font-black text-gray-900 mb-6">Quick Actions</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">Quick Actions</h2>
               
               <div className="space-y-3">
                 <button 
@@ -329,18 +468,21 @@ useEffect(() => {
                     <Edit2 size={18} className="text-white" />
                   </div>
                   <div className="flex-1 text-left">
-                    <div className="font-semibold text-gray-900">Edit Profile</div>
-                    <div className="text-xs text-gray-600">Update information</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Edit Profile</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Update information</div>
                   </div>
                 </button>
 
-                <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl hover:from-blue-100 hover:to-cyan-100 transition-all duration-300 group">
+                <button 
+                  onClick={() => setShowSettingsModal(true)}
+                  className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl hover:from-blue-100 hover:to-cyan-100 transition-all duration-300 group"
+                >
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Settings size={18} className="text-white" />
                   </div>
                   <div className="flex-1 text-left">
-                    <div className="font-semibold text-gray-900">Settings</div>
-                    <div className="text-xs text-gray-600">Manage preferences</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Settings</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Manage preferences</div>
                   </div>
                 </button>
 
@@ -349,18 +491,20 @@ useEffect(() => {
                     <Bell size={18} className="text-white" />
                   </div>
                   <div className="flex-1 text-left">
-                    <div className="font-semibold text-gray-900">Notifications</div>
-                    <div className="text-xs text-gray-600">3 new alerts</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Notifications</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">3 new alerts</div>
                   </div>
                 </button>
 
-                <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl hover:from-green-100 hover:to-emerald-100 transition-all duration-300 group">
+                <button 
+                  onClick={() => setShowPrivacyModal(true)}
+                  className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl hover:from-green-100 hover:to-emerald-100 transition-all duration-300 group">
                   <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Shield size={18} className="text-white" />
                   </div>
                   <div className="flex-1 text-left">
-                    <div className="font-semibold text-gray-900">Privacy</div>
-                    <div className="text-xs text-gray-600">Security settings</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Privacy</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Security settings</div>
                   </div>
                 </button>
               </div>
@@ -372,10 +516,213 @@ useEffect(() => {
 
       </div>
 
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transition-colors duration-300">
+            <button
+              onClick={() => {
+                setShowChangePasswordModal(false);
+                setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Change Password</h2>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Old Password</label>
+                <input
+                  type="password"
+                  value={passwordData.oldPassword}
+                  onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="Enter your old password"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">New Password</label>
+                <input
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="Enter new password"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowChangePasswordModal(false);
+                  setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                }}
+                className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleChangePassword}
+                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transition-colors duration-300">
+            <button
+              onClick={() => setShowSettingsModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Settings</h2>
+
+            <div className="space-y-4">
+              <div 
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Dark Mode</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Toggle dark theme</div>
+                  </div>
+                  <div className={`relative w-12 h-6 rounded-full transition-colors ${isDarkMode ? 'bg-indigo-600' : 'bg-gray-300'}`}>
+                    <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${isDarkMode ? 'translate-x-6' : ''}`}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Language</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">English (US)</div>
+                  </div>
+                  <div className="text-gray-400 dark:text-gray-500">›</div>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 my-4"></div>
+            </div>
+
+            <button
+              onClick={() => setShowSettingsModal(false)}
+              className="w-full mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-semibold"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Modal */}
+      {showPrivacyModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transition-colors duration-300">
+            <button
+              onClick={() => setShowPrivacyModal(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Privacy & Security</h2>
+
+            <div className="space-y-4">
+              <div 
+                onClick={() => {
+                  setShowChangePasswordModal(true)
+                  setShowPrivacyModal(false);
+                }}
+                className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Change Password</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Update your password</div>
+                  </div>
+                  <div className="text-gray-400 dark:text-gray-500">›</div>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 my-4"></div>
+
+              <div 
+                onClick={handleDeleteAccount}
+                className="p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors cursor-pointer border border-red-200"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-red-900">Delete Account</div>
+                    <div className="text-xs text-red-700">Permanently delete your account</div>
+                  </div>
+                  <div className="text-red-600">›</div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowPrivacyModal(false)}
+              className="w-full mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-semibold"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Image View Modal */}
+      {showImageModal && userdata.profilepic && (
+        <div 
+          onClick={() => setShowImageModal(false)}
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer"
+        >
+          <div className="relative max-w-4xl w-full">
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute -top-12 right-0 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={24} className="text-white" />
+            </button>
+            <img 
+              src={userdata.profilepic} 
+              alt="Profile Full View" 
+              className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Image Update Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transition-colors duration-300">
             <button
               onClick={() => {
                 setShowModal(false);
@@ -387,7 +734,7 @@ useEffect(() => {
               <X size={20} className="text-gray-600" />
             </button>
 
-            <h2 className="text-2xl font-black text-gray-900 mb-6">Update Profile Picture</h2>
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Update Profile Picture</h2>
 
             <div className="mb-6">
               <div className="w-full h-64 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center overflow-hidden mb-4">
@@ -437,7 +784,7 @@ useEffect(() => {
       {/* Edit Profile Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transition-colors duration-300">
             <button
               onClick={() => setShowEditModal(false)}
               className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
@@ -445,48 +792,48 @@ useEffect(() => {
               <X size={20} className="text-gray-600" />
             </button>
 
-            <h2 className="text-2xl font-black text-gray-900 mb-6">Edit Profile</h2>
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">Edit Profile</h2>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Username</label>
                 <input
                   type="text"
                   value={editFormData.username}
                   onChange={(e) => setEditFormData({...editFormData, username: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
                 <input
                   type="text"
                   value={editFormData.fullname}
                   onChange={(e) => setEditFormData({...editFormData, fullname: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
                 <input
                   type="email"
                   value={editFormData.email}
                   onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Bio</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Bio</label>
                 <textarea
                   value={editFormData.bio}
                   onChange={(e) => setEditFormData({...editFormData, bio: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
                   placeholder="Tell us about yourself"
                   rows="3"
                 />

@@ -9,6 +9,7 @@ const Navbar = () => {
   const isLoggedIn = localStorage.getItem('Username') ? true : false; // Replace with actual auth state
   const location = useLocation()
 
+  const username = localStorage.getItem('Username')
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -55,9 +56,9 @@ const Navbar = () => {
                 <Link to="/wishlist" className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-300">
                   <Heart size={20} className="text-gray-700" />
                 </Link>
-                <Link to="/Profile" className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-700 to-teal-600 text-white rounded-full hover:shadow-lg transition-all duration-300">
+                <Link to="/Profile" className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-full hover:shadow-lg transition-all duration-300">
                   <User size={18} />
-                  <span className="font-medium">Profile</span>
+                  <span className="font-medium">{username}</span>
                 </Link>
               </div>
             ) : (
