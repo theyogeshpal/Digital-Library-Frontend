@@ -1,40 +1,57 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, BookOpen, Heart, Share2, Download, User, Calendar, Tag } from 'lucide-react';
+import { ArrowLeft, Star, BookOpen, Heart, Share2, Download, User, Calendar, Tag, X, Facebook, Twitter, Linkedin, Link, Check } from 'lucide-react';
+import axios from 'axios';
 
 const BookDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Random data for now - API call will be added later
-    const bookData = {
-      id: id,
-      title: "The Architecture of Logic",
-      author: "Dr. Elena Vance",
-      category: "Philosophy",
-      rating: 4.9,
-      reviews: 128,
-      pages: 456,
-      language: "English",
-      publishDate: "2023",
-      isbn: "978-3-16-148410-0",
-      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80",
-      description: "Exploring the fundamentals of structured thinking and logical reasoning in a digital age. This comprehensive volume delves deep into the principles that govern rational thought and decision-making processes.",
-      fullDescription: "In this groundbreaking work, Dr. Elena Vance presents a revolutionary approach to understanding logic in the modern era. The book seamlessly blends classical philosophical traditions with contemporary digital paradigms, offering readers a unique perspective on how we process information and make decisions. Through carefully crafted examples and thought-provoking exercises, readers will develop a deeper appreciation for the architecture that underlies all rational discourse. The text is divided into three main sections: Foundations of Logic, Digital Age Reasoning, and Practical Applications. Each section builds upon the previous, creating a comprehensive framework for understanding how logic shapes our world.",
-      tableOfContents: [
-        "Chapter 1: Introduction to Logical Thinking",
-        "Chapter 2: Classical Logic Foundations",
-        "Chapter 3: Digital Age Paradigms",
-        "Chapter 4: Reasoning in Complex Systems",
-        "Chapter 5: Practical Applications"
-      ]
+    const fetchBookDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/book/show/${id}`);
+        setBook(response.data.data);
+      } catch (error) {
+        console.error('Error fetching book details:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setBook(bookData);
+
+    if (id) {
+      fetchBookDetails();
+    }
   }, [id]);
 
-  if (!book) {
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareOnSocial = (platform) => {
+    const url = window.location.href;
+    const text = `Check out "${book.title}" by ${book.author}`;
+    
+    const urls = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`,
+      telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+    };
+    
+    window.open(urls[platform], '_blank', 'width=600,height=400');
+  };
+
+  if (loading || !book) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
@@ -77,7 +94,10 @@ const BookDetails = () => {
               
               {/* Action Buttons */}
               <div className="mt-6 space-y-3">
-                <button className="w-full flex items-center justify-center gap-3 bg-blue-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl transition-all">
+                <button 
+                  onClick={() => setShowPdfModal(true)}
+                  className="w-full flex items-center justify-center gap-3 bg-blue-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl transition-all"
+                >
                   <BookOpen size={20} />
                   Read Now
                 </button>
@@ -85,12 +105,15 @@ const BookDetails = () => {
                   <button className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
                     <Heart size={18} />
                   </button>
-                  <button className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                  <button 
+                    onClick={() => setShowShareModal(true)}
+                    className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all"
+                  >
                     <Share2 size={18} />
                   </button>
-                  <button className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                  <a target='_blank' download={`${book.title}.pdf`} href={book.bookPdf} className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
                     <Download size={18} />
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -152,26 +175,129 @@ const BookDetails = () => {
               </div>
 
               {/* Table of Contents */}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Table of Contents</h2>
-                <div className="space-y-3">
-                  {book.tableOfContents.map((chapter, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 transition-colors cursor-pointer"
-                    >
-                      <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">
-                        {index + 1}
+              {book.tableOfContents && book.tableOfContents.length > 0 && (
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Table of Contents</h2>
+                  <div className="space-y-3">
+                    {book.tableOfContents.map((chapter, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 transition-colors cursor-pointer"
+                      >
+                        <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">
+                          {index + 1}
+                        </div>
+                        <span className="font-medium text-gray-700">{chapter}</span>
                       </div>
-                      <span className="font-medium text-gray-700">{chapter}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* PDF Modal */}
+      {showPdfModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900">{book.title}</h3>
+              <button
+                onClick={() => setShowPdfModal(false)}
+                className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X size={20} className="text-gray-600" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={book.bookPdf}
+                className="w-full h-full"
+                title={book.title}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Share Book</h3>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X size={20} className="text-gray-600" />
+              </button>
+            </div>
+
+            <div className="flex justify-center gap-4 mb-6">
+              <button
+                onClick={() => shareOnSocial('facebook')}
+                className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors"
+              >
+                <Facebook size={24} className="text-white" />
+              </button>
+
+              <button
+                onClick={() => shareOnSocial('twitter')}
+                className="w-14 h-14 bg-sky-500 hover:bg-sky-600 rounded-full flex items-center justify-center transition-colors"
+              >
+                <Twitter size={24} className="text-white" />
+              </button>
+
+              <button
+                onClick={() => shareOnSocial('linkedin')}
+                className="w-14 h-14 bg-blue-700 hover:bg-blue-800 rounded-full flex items-center justify-center transition-colors"
+              >
+                <Linkedin size={24} className="text-white" />
+              </button>
+
+              <button
+                onClick={() => shareOnSocial('whatsapp')}
+                className="w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
+              >
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </button>
+
+              <button
+                onClick={() => shareOnSocial('telegram')}
+                className="w-14 h-14 bg-sky-400 hover:bg-sky-500 rounded-full flex items-center justify-center transition-colors"
+              >
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-sm font-semibold text-gray-700 mb-3">Or copy link</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={window.location.href}
+                  readOnly
+                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-colors flex items-center gap-2"
+                >
+                  {copied ? <Check size={18} /> : <Link size={18} />}
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
