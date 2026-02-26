@@ -20,7 +20,7 @@ const Collection = () => {
   }, [books]);
 
   const checkLoginAndNavigate = (bookId) => {
-    const username = localStorage.getItem('username');
+    const username = localStorage.getItem('Username');
     
     if (!username) {
       Swal.fire({
