@@ -12,6 +12,7 @@ import Profile from "./Pages/Profile"
 import ForgotPassword from "./Pages/ForgotPassword"
 import Terms from "./Pages/Terms"
 import BookDetails from "./Pages/BookDetails"
+import Wishlist from "./Pages/Wishlist"
 import ScrollToTop from "./components/ScrollToTop"
 import { DarkModeProvider } from "./context/DarkModeContext"
 
@@ -31,6 +32,7 @@ const app = () => {
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="/Terms" element={<Terms />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
