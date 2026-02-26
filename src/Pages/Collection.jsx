@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, BookOpen, Heart, ArrowRight, Star, SlidersHorizontal, Grid, List as ListIcon, Loader2, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const Collection = () => {
   const navigate = useNavigate();
@@ -11,88 +13,20 @@ const Collection = () => {
 
   const categories = ['All', 'Academic', 'Fiction', 'Science', 'History', 'Philosophy', 'Engineering'];
 
-  const books =  [
-    {
-      id: 1,
-      title: "The Architecture of Logic",
-      author: "Dr. Elena Vance",
-      category: "Philosophy",
-      rating: 4.9,
-      reviews: 128,
-      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80",
-      description: "Exploring the fundamentals of structured thinking and logical reasoning in a digital age."
-    },
-    {
-      id: 2,
-      title: "Quantum Mechanics: Redefined",
-      author: "Markus Thorne",
-      category: "Science",
-      rating: 4.8,
-      reviews: 245,
-      image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80",
-      description: "A comprehensive guide to the subatomic world, updated with the latest research findings."
-    },
-    {
-      id: 3,
-      title: "The Digital Essential",
-      author: "Sarah J. Core",
-      category: "Philosophy",
-      rating: 5.0,
-      reviews: 89,
-      image: "https://images.unsplash.com/photo-1589998059171-988d887df646?auto=format&fit=crop&q=80",
-      description: "Preserving human knowledge in the age of rapid technological evolution and AI."
-    },
-    {
-      id: 4,
-      title: "Ancient Civilizations",
-      author: "Prof. Arthur West",
-      category: "History",
-      rating: 4.7,
-      reviews: 312,
-      image: "https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?auto=format&fit=crop&q=80",
-      description: "Uncovering the secrets of the past through archival research and modern archaeology."
-    },
-    {
-      id: 5,
-      title: "Engineering the Future",
-      author: "James Miller",
-      category: "Engineering",
-      rating: 4.9,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1531235000281-10c97a6c760d?auto=format&fit=crop&q=80",
-      description: "The principles of sustainable engineering and their application in urban development."
-    },
-    {
-      id: 6,
-      title: "The Scholar's Path",
-      author: "Katherine Bloom",
-      category: "Academic",
-      rating: 4.6,
-      reviews: 92,
-      image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80",
-      description: "Navigating the complexities of higher education and professional research."
-    },
-    {
-      id: 7,
-      title: "Beyond the Event Horizon",
-      author: "Starlight Archive",
-      category: "Science",
-      rating: 4.8,
-      reviews: 178,
-      image: "https://images.unsplash.com/photo-1543004218-ee1417070da4?auto=format&fit=crop&q=80",
-      description: "A journey through the mysteries of black holes and the fabric of spacetime."
-    },
-    {
-      id: 8,
-      title: "Midnight Echoes",
-      author: "Julian Reed",
-      category: "Fiction",
-      rating: 4.5,
-      reviews: 420,
-      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80",
-      description: "A gripping tale of mystery set in a world where shadows hold the key to the truth."
+  const [books, setBooks] = useState([])
+
+  useEffect(() => {
+    const getBooks = async () => {
+      try {
+        const bookdata = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show')
+        setBooks(bookdata.data.data)
+      } catch (error) {
+        console.error('Error fetching books:', error)
+      }
     }
-  ];
+
+    getBooks()
+  },[])
 
   const filteredBooks = useMemo(() => {
     return books.filter(book => {
@@ -203,11 +137,11 @@ const Collection = () => {
           </div>
 
           {/* Books Grid */}
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8' : 'space-y-6'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6' : 'space-y-6'}>
             {filteredBooks.map((book) => (
               <div
-                key={book.id}
-                className={`group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 will-change-transform ${viewMode === 'list' ? 'flex flex-col md:flex-row h-auto md:h-64' : ''
+                key={book._id}
+                className={`group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 will-change-transform ${viewMode === 'list' ? 'flex flex-col md:flex-row h-auto md:h-64' : ''
                   }`}
               >
                 {/* Book Image Cover */}
@@ -219,13 +153,13 @@ const Collection = () => {
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 will-change-transform"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <button className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-colors shadow-lg shadow-black/10 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 duration-300">
-                    <Heart size={20} />
+                  <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-colors shadow-lg shadow-black/10 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 duration-300">
+                    <Heart size={16} />
                   </button>
-                  <div className="absolute bottom-4 left-4 right-4 transform translate-y-[20px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute bottom-3 left-3 right-3 transform translate-y-[20px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button 
-                      onClick={() => navigate(`/book/${book.id}`)}
-                      className="w-full py-2 bg-teal-500 text-indigo-950 rounded-lg text-sm font-black shadow-xl"
+                      onClick={() => navigate(`/book/${book._id}`)}
+                      className="w-full py-2 bg-teal-500 text-indigo-950 rounded-lg text-xs font-black shadow-xl"
                     >
                       View Details
                     </button>
@@ -233,21 +167,21 @@ const Collection = () => {
                 </div>
 
                 {/* Book Info */}
-                <div className="p-6 flex flex-col justify-between flex-grow">
+                <div className="p-4 flex flex-col justify-between flex-grow">
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-2 py-1 rounded">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-2 py-0.5 rounded">
                         {book.category}
                       </span>
-                      <div className="flex items-center gap-1 text-sm font-bold text-gray-600">
-                        <Star className="text-yellow-400 fill-yellow-400" size={14} />
+                      <div className="flex items-center gap-1 text-xs font-bold text-gray-600">
+                        <Star className="text-yellow-400 fill-yellow-400" size={12} />
                         {book.rating}
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-indigo-950 mb-1 group-hover:text-indigo-700 transition-colors">
+                    <h3 className="text-base font-bold text-indigo-950 mb-1 group-hover:text-indigo-700 transition-colors line-clamp-2">
                       {book.title}
                     </h3>
-                    <p className="text-sm text-gray-500 mb-3 font-medium">By {book.author}</p>
+                    <p className="text-xs text-gray-500 mb-2 font-medium">By {book.author}</p>
                     {viewMode === 'list' && (
                       <p className="text-gray-500 text-sm leading-relaxed mb-4 max-w-2xl line-clamp-2">
                         {book.description}
@@ -255,14 +189,14 @@ const Collection = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 md:mt-0 pt-4 border-t border-gray-50">
-                    <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
-                      <BookOpen size={14} />
-                      {book.reviews} Reviews
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-gray-400">
+                      <BookOpen size={12} />
+                      {book.reviews}
                     </div>
-                    <button className="flex items-center gap-2 text-indigo-600 font-bold text-sm hover:gap-3 transition-all">
-                      Read Now
-                      <ArrowRight size={16} />
+                    <button className="flex items-center gap-1 text-indigo-600 font-bold text-xs hover:gap-2 transition-all">
+                      Read
+                      <ArrowRight size={12} />
                     </button>
                   </div>
                 </div>
