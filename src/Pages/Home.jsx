@@ -13,6 +13,8 @@ const Home = () => {
       try {
         const response = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show');
         const allBooks = response.data.data;
+        // console.log('cs')
+        // console.log(response.data.data)
         setBooks(allBooks);
 
         // Extract unique categories with their first book image
