@@ -292,7 +292,7 @@ const Collection = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <button 
                   onClick={(e) => likeBook(book._id, e)}
-                  className={`absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg shadow-black/10 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 duration-300 ${
+                  className={`absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg shadow-black/10 duration-300 ${
                     likedBooks.includes(book._id) ? 'text-red-500' : 'text-gray-400 hover:text-pink-600'
                   }`}>
                     <Heart size={16} className={likedBooks.includes(book._id) ? 'fill-red-500' : ''} />

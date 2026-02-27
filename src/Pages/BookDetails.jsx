@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, BookOpen, Heart, Share2, Download, User, Calendar, Tag, X, Facebook, Twitter, Linkedin, Link, Check } from 'lucide-react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -11,6 +12,8 @@ const BookDetails = () => {
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const username = localStorage.getItem('Username');
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -18,6 +21,14 @@ const BookDetails = () => {
         setLoading(true);
         const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/book/show/${id}`);
         setBook(response.data.data);
+
+        if (username) {
+          const likedResponse = await axios.get(`https://digital-library-backend-jesb.onrender.com/api/likedbooks/${username}`);
+          if (likedResponse.data.data) {
+            const likedBookIds = likedResponse.data.data.map(item => item.bookid._id);
+            setIsLiked(likedBookIds.includes(id));
+          }
+        }
       } catch (error) {
         console.error('Error fetching book details:', error);
       } finally {
@@ -28,12 +39,56 @@ const BookDetails = () => {
     if (id) {
       fetchBookDetails();
     }
-  }, [id]);
+  }, [id, username]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleLike = async () => {
+    if (!username) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Login Required',
+        text: 'Please login to like books',
+        confirmButtonText: 'Go to Login',
+        confirmButtonColor: '#4F46E5',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+      return;
+    }
+
+    try {
+      const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/like', {
+        uname: username,
+        bid: id
+      });
+      
+      setIsLiked(!isLiked);
+      
+      Swal.fire({
+        icon: 'success',
+        title: res.data.message,
+        timer: 1500,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update like status',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
   };
 
   const shareOnSocial = (platform) => {
@@ -102,8 +157,15 @@ const BookDetails = () => {
                   Read Now
                 </button>
                 <div className="grid grid-cols-3 gap-3">
-                  <button className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 py-3 rounded-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
-                    <Heart size={18} />
+                  <button 
+                    onClick={handleLike}
+                    className={`flex items-center justify-center gap-2 bg-white border-2 py-3 rounded-xl transition-all ${
+                      isLiked 
+                        ? 'border-red-500 text-red-500' 
+                        : 'border-gray-200 hover:border-indigo-600 hover:text-indigo-600'
+                    }`}
+                  >
+                    <Heart size={18} className={isLiked ? 'fill-red-500' : ''} />
                   </button>
                   <button 
                     onClick={() => setShowShareModal(true)}
