@@ -9,6 +9,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { isDarkMode, setIsDarkMode } = useDarkMode();
   const [username, setUsername] = useState('');
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -74,7 +75,19 @@ useEffect(() => {
     }
   };
 
+  const getWishlistCount = async () => {
+    try {
+      const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/api/likedbooks/${username}`);
+      if (response.data.data) {
+        setWishlistCount(response.data.data.length);
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist count:', error);
+    }
+  };
+
   getdetails();
+  getWishlistCount();
 
 }, [username]);   // 👈 IMPORTANT
 
@@ -337,7 +350,7 @@ useEffect(() => {
 
   const stats = [
     { label: 'Books Read', value: '12', icon: BookOpen, gradient: 'from-blue-500 to-cyan-500' },
-    { label: 'Wishlist', value: '8', icon: Heart, gradient: 'from-pink-500 to-rose-500' }
+    { label: 'Wishlist', value: wishlistCount, icon: Heart, gradient: 'from-pink-500 to-rose-500' }
 
   ];
 

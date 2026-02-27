@@ -22,15 +22,13 @@ const Wishlist = () => {
   const fetchWishlist = async () => {
     try {
       setLoading(true);
-      // Get wishlist from localStorage for now (you can replace with API call)
-      const savedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const username = localStorage.getItem('Username');
       
-      if (savedWishlist.length > 0) {
-        // Fetch book details for wishlist items
-        const response = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show');
-        const allBooks = response.data.data;
-        const wishlistBooksData = allBooks.filter(book => savedWishlist.includes(book._id));
-        setWishlistBooks(wishlistBooksData);
+      const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/api/likedbooks/${username}`);
+      
+      if (response.data.data && response.data.data.length > 0) {
+        const booksData = response.data.data.map(item => item.bookid);
+        setWishlistBooks(booksData);
       }
     } catch (error) {
       console.error('Error fetching wishlist:', error);
@@ -39,30 +37,44 @@ const Wishlist = () => {
     }
   };
 
-  const removeFromWishlist = (bookId) => {
+  const removeFromWishlist = async (bookId) => {
     Swal.fire({
-      title: 'Remove from Wishlist?',
-      text: 'This book will be removed from your wishlist',
+      title: 'Remove from Favourites?',
+      text: 'This book will be removed from your favourites',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#DC2626',
       cancelButtonColor: '#6B7280',
       confirmButtonText: 'Yes, remove it',
       cancelButtonText: 'Cancel'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const savedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-        const updatedWishlist = savedWishlist.filter(id => id !== bookId);
-        localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
-        setWishlistBooks(wishlistBooks.filter(book => book._id !== bookId));
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Removed!',
-          text: 'Book removed from wishlist',
-          timer: 1500,
-          showConfirmButton: false
-        });
+        try {
+          const username = localStorage.getItem('Username');
+          await axios.post('https://digital-library-backend-jesb.onrender.com/api/like', {
+            uname: username,
+            bid: bookId
+          });
+          
+          setWishlistBooks(wishlistBooks.filter(book => book._id !== bookId));
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Removed!',
+            text: 'Book removed from favourites',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } catch (error) {
+          console.error('Error removing book:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to remove book',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        }
       }
     });
   };
@@ -206,8 +218,8 @@ const Wishlist = () => {
                       {book.category}
                     </span>
                     <div className="flex items-center gap-1 text-xs font-bold text-gray-600">
-                      <Star className="text-amber-400 fill-amber-400" size={12} />
-                      {book.rating}
+                      <Heart className="text-red-400 fill-red-400" size={12} />
+                      {book.likeCount? book.likeCount : 0}
                     </div>
                   </div>
                   <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-pink-600 transition-colors">

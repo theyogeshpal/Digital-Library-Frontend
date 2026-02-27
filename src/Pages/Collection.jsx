@@ -27,14 +27,15 @@ const Collection = () => {
   const booksPerPage = 20;
 
   const [books, setBooks] = useState([]);
+  const [likedBooks, setLikedBooks] = useState([]);
  
   const categories = useMemo(() => {
     const uniqueCategories = [...new Set(books.map((book) => book.category))];
     return ["All", ...uniqueCategories.sort()];
   }, [books]);
 
+  const username = localStorage.getItem("Username");
   const checkLoginAndNavigate = (bookId) => {
-    const username = localStorage.getItem("Username");
 
     if (!username) {
       Swal.fire({
@@ -55,6 +56,61 @@ const Collection = () => {
     }
   };
 
+  const likeBook = async (bid, e) => {
+    e.stopPropagation();
+    
+    if (!username) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to like books",
+        confirmButtonText: "Go to Login",
+        confirmButtonColor: "#4F46E5",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+      return;
+    }
+
+    const formdata = {
+      uname: username,
+      bid: bid
+    }
+
+    try {
+      const res = await axios.post('https://digital-library-backend-jesb.onrender.com/api/like', formdata)
+      
+      if (likedBooks.includes(bid)) {
+        setLikedBooks(likedBooks.filter(id => id !== bid));
+      } else {
+        setLikedBooks([...likedBooks, bid]);
+      }
+      
+      Swal.fire({
+        icon: 'success',
+        title: res.data.message,
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+
+    }
+    catch (error) {
+      console.log(error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update like status',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+  }
+
   useEffect(() => {
     const getBooks = async () => {
       try {
@@ -67,8 +123,23 @@ const Collection = () => {
       }
     };
 
+    const getLikedBooks = async () => {
+      if (username) {
+        try {
+          const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/api/likedbooks/${username}`);
+          if (response.data.data) {
+            const likedBookIds = response.data.data.map(item => item.bookid._id);
+            setLikedBooks(likedBookIds);
+          }
+        } catch (error) {
+          console.error("Error fetching liked books:", error);
+        }
+      }
+    };
+
     getBooks();
-  }, []);
+    getLikedBooks();
+  }, [likeBook]);
   const filteredBooks = useMemo(() => {
     return books.filter((book) => {
       const matchesSearch =
@@ -219,8 +290,12 @@ const Collection = () => {
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 will-change-transform"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-indigo-600 transition-colors shadow-lg shadow-black/10 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 duration-300">
-                    <Heart size={16} />
+                  <button 
+                  onClick={(e) => likeBook(book._id, e)}
+                  className={`absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg shadow-black/10 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 duration-300 ${
+                    likedBooks.includes(book._id) ? 'text-red-500' : 'text-gray-400 hover:text-pink-600'
+                  }`}>
+                    <Heart size={16} className={likedBooks.includes(book._id) ? 'fill-red-500' : ''} />
                   </button>
                   <div className="absolute bottom-3 left-3 right-3 transform translate-y-[20px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button
@@ -240,11 +315,11 @@ const Collection = () => {
                         {book.category}
                       </span>
                       <div className="flex items-center gap-1 text-xs font-bold text-gray-600">
-                        <Star
-                          className="text-yellow-400 fill-yellow-400"
+                        <Heart
+                          className="text-red-400 fill-red-400"
                           size={12}
                         />
-                        {book.rating}
+                        {book.likeCount? book.likeCount : 0 }
                       </div>
                     </div>
                     <h3 className="text-base font-bold text-indigo-950 mb-1 group-hover:text-indigo-700 transition-colors line-clamp-2">
