@@ -329,8 +329,8 @@ useEffect(() => {
       formData.append('banner', bannerFile);
       formData.append('username', username);
 
-      'https://digital-library-backend-jesb.onrender.com/api/update/banner',
       await axios.put(
+        'https://digital-library-backend-jesb.onrender.com/api/update/banner',
         formData
       );
 
