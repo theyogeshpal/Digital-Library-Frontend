@@ -19,9 +19,9 @@ const Profile = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [passwordData, setPasswordData] = useState({
-    oldPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    oldpassword: '',
+    newpassword: '',
+    confirmnewpassword: ''
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -98,7 +98,7 @@ useEffect(() => {
 }, [username]);   // 👈 IMPORTANT
 
   const handleChangePassword = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    if (passwordData.newpassword !== passwordData.confirmnewpassword) {
       Swal.fire({
         icon: 'error',
         title: 'Passwords do not match',
@@ -117,12 +117,13 @@ useEffect(() => {
     });
 
     try {
+
       await axios.put(
-        'https://digital-library-backend-jesb.onrender.com/api/user/change-password',
+        'http://localhost:3000/api/user/changepassword',
         {
           username: username,
-          oldPassword: passwordData.oldPassword,
-          newPassword: passwordData.newPassword
+          oldpassword: passwordData.oldpassword,
+          newpassword: passwordData.newpassword
         }
       );
 
@@ -135,7 +136,7 @@ useEffect(() => {
       });
 
       setShowChangePasswordModal(false);
-      setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      setPasswordData({ oldpassword: '', newpassword: '', confirmnewpassword: '' });
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -534,28 +535,6 @@ useEffect(() => {
               ))}
             </div>
 
-            {/* Recent Activity */}
-            {/* <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white">Recent Activity</h2>
-                <TrendingUp className="text-indigo-600" size={24} />
-              </div>
-              
-              <div className="space-y-4">
-                {activities.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 bg-gradient-to-r from-gray-50 dark:from-gray-700 to-transparent rounded-2xl hover:from-indigo-50 dark:hover:from-indigo-900 transition-all duration-300 cursor-pointer group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <activity.icon size={20} className="text-indigo-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{activity.title}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div> */}
-
           </div>
 
           {/* Right Column - Settings */}
@@ -706,7 +685,7 @@ useEffect(() => {
             <button
               onClick={() => {
                 setShowChangePasswordModal(false);
-                setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                setPasswordData({ oldpassword: '', newpassword: '', confirmnewpassword: '' });
               }}
               className="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
             >
@@ -720,8 +699,8 @@ useEffect(() => {
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Old Password</label>
                 <input
                   type="password"
-                  value={passwordData.oldPassword}
-                  onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                  value={passwordData.oldpassword}
+                  onChange={(e) => setPasswordData({...passwordData, oldpassword: e.target.value})}
                   className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   placeholder="Enter your old password"
                 />
@@ -731,8 +710,8 @@ useEffect(() => {
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">New Password</label>
                 <input
                   type="password"
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                  value={passwordData.newpassword}
+                  onChange={(e) => setPasswordData({...passwordData, newpassword: e.target.value})}
                   className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   placeholder="Enter new password"
                 />
@@ -742,8 +721,8 @@ useEffect(() => {
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
                 <input
                   type="password"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                  value={passwordData.confirmnewpassword}
+                  onChange={(e) => setPasswordData({...passwordData, confirmnewpassword: e.target.value})}
                   className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   placeholder="Confirm new password"
                 />
@@ -754,7 +733,7 @@ useEffect(() => {
               <button
                 onClick={() => {
                   setShowChangePasswordModal(false);
-                  setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                  setPasswordData({ oldpassword: '', newpassword: '', confirmnewpassword: '' });
                 }}
                 className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
               >
