@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Facebook, Twitter, Github, Linkedin, Mail, Phone, Send } from 'lucide-react';
+import { BookOpen, Facebook, Twitter, Github, Linkedin, Mail, Phone, Send, Heart } from 'lucide-react';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -51,25 +51,25 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Support Section */}
+                    {/* Contact Section */}
                     <div>
                         <h3 className="text-white font-bold mb-6 flex items-center gap-2">
                             <span className="w-8 h-1 bg-indigo-600 rounded-full"></span>
-                            Help & Support
+                            Contact Us
                         </h3>
                         <ul className="space-y-4">
-                            {[
-                                { name: 'Terms of Services', path: '/Terms' },
-                                { name: 'Privacy Policy', path: '/About' }
-
-                            ].map((link) => (
-                                <li key={link.name}>
-                                    <Link to={link.path} className="hover:text-indigo-400 transition-colors duration-300 flex items-center gap-2 group text-sm">
-                                        <span className="w-1.5 h-1.5 bg-gray-700 rounded-full group-hover:bg-indigo-400 transition-all"></span>
-                                        {link.name}
-                                    </Link>
-                                </li>
-                            ))}
+                            <li>
+                                <a href="tel:+917817095043" className="flex items-start gap-3 text-sm hover:text-indigo-400 transition-colors">
+                                    <Phone size={16} className="text-indigo-400 mt-1 flex-shrink-0" />
+                                    <span className="text-gray-400">+91 78170 95043</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="mailto:corearchive1@gmail.com" className="flex items-start gap-3 text-sm hover:text-indigo-400 transition-colors">
+                                    <Mail size={16} className="text-indigo-400 mt-1 flex-shrink-0" />
+                                    <span className="text-gray-400">corearchive1@gmail.com</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
 
@@ -100,17 +100,20 @@ const Footer = () => {
                     <p className="text-gray-400 text-sm">
                         © {currentYear} <span className="text-indigo-400 font-bold">Core Archive</span>. All rights reserved.
                     </p>
+                    <p className="text-gray-400 text-sm flex items-center justify-center gap-1">
+                        Created with <Heart size={14} className="text-red-500 fill-red-500" /> by <span className="text-indigo-400 font-bold ml-1">Yogesh Pal</span>
+                    </p>
                     <div className="flex flex-wrap items-center justify-center gap-8">
-                        <div className="flex items-center gap-2 text-gray-400 text-sm">
-                            <Phone size={16} className="text-teal-400" />
-                            <span>+91 78170 95043</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-400 text-sm">
-                            <Mail size={16} className="text-indigo-400" />
-                            <span>corearchive1@gmail.com</span>
-                        </div>
+                        <Link to="/Terms" className="text-gray-400 text-sm hover:text-teal-400 transition-colors">
+                            Terms of Services
+                        </Link>
+                        <Link to="/About" className="text-gray-400 text-sm hover:text-indigo-400 transition-colors">
+                            Privacy Policy
+                        </Link>
                     </div>
                 </div>
+
+
             </div>
         </footer>
     );
