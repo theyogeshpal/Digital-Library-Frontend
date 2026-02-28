@@ -24,6 +24,17 @@
   }
 }
 
+@keyframes float-heart {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) scale(1.5);
+    opacity: 0;
+  }
+}
+
 .bubble {
   position: absolute;
   bottom: -100px;

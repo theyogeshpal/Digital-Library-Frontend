@@ -7,10 +7,12 @@ const Home = () => {
 
   const [books, setBooks] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getBooks = async () => {
       try {
+        setLoading(true);
         const response = await axios.get('https://digital-library-backend-jesb.onrender.com/book/show');
         const allBooks = response.data.data;
         // console.log('cs')
@@ -30,6 +32,8 @@ const Home = () => {
         setCategories(categoryData);
       } catch (error) {
         console.error('Error fetching books:', error);
+      } finally {
+        setLoading(false);
       }
     };
     getBooks();
@@ -108,7 +112,22 @@ const Home = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((cat, i) => {
+          {loading ? (
+            // Skeleton Loader
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden shadow-xl bg-gray-200 animate-pulse">
+                <div className="h-full p-6 flex flex-col justify-between">
+                  <div className="w-12 h-12 bg-gray-300 rounded-xl"></div>
+                  <div>
+                    <div className="w-20 h-3 bg-gray-300 rounded mb-2"></div>
+                    <div className="w-32 h-6 bg-gray-300 rounded mb-3"></div>
+                    <div className="w-8 h-1 bg-gray-300 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            categories.map((cat, i) => {
             const colors = ['indigo', 'teal', 'emerald', 'purple', 'blue', 'cyan'];
             const color = colors[i % colors.length];
 
@@ -143,7 +162,8 @@ const Home = () => {
                 </div>
               </Link>
             );
-          })}
+          })
+          )}
         </div>
       </section>
 

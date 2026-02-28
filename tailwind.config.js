@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      animation: {
+        'float-heart': 'float-heart 1s ease-out forwards',
+      },
       colors: {
         navy: {
           50: '#e6eef5',

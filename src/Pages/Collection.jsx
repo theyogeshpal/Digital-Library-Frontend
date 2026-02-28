@@ -28,6 +28,7 @@ const Collection = () => {
 
   const [books, setBooks] = useState([]);
   const [likedBooks, setLikedBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
  
   const categories = useMemo(() => {
     const uniqueCategories = [...new Set(books.map((book) => book.category))];
@@ -89,14 +90,6 @@ const Collection = () => {
       } else {
         setLikedBooks([...likedBooks, bid]);
       }
-      
-      Swal.fire({
-        icon: 'success',
-        title: res.data.message,
-        timer: 1500,
-        showConfirmButton: false
-      });
-
 
     }
     catch (error) {
@@ -114,12 +107,15 @@ const Collection = () => {
   useEffect(() => {
     const getBooks = async () => {
       try {
+        setLoading(true);
         const bookdata = await axios.get(
           "https://digital-library-backend-jesb.onrender.com/book/show",
         );
         setBooks(bookdata.data.data);
       } catch (error) {
         console.error("Error fetching books:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -139,7 +135,7 @@ const Collection = () => {
 
     getBooks();
     getLikedBooks();
-  }, [likeBook]);
+  }, [username]);
   const filteredBooks = useMemo(() => {
     return books.filter((book) => {
       const matchesSearch =
@@ -263,6 +259,12 @@ const Collection = () => {
           </div>
 
           {/* Books Grid */}
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-block w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-gray-600 font-medium">Loading books...</p>
+            </div>
+          ) : (
           <div
             className={
               viewMode === "grid"
@@ -352,9 +354,25 @@ const Collection = () => {
               </div>
             ))}
           </div>
+          )}
 
           {/* Empty State */}
-          {filteredBooks.length === 0 && (
+          {!loading && books.length === 0 && (
+            <div className="py-20 text-center">
+              <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="text-gray-300" size={48} />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                No books available
+              </h3>
+              <p className="text-gray-500">
+                No books found in the archive. Please check back later.
+              </p>
+            </div>
+          )}
+
+          {/* No Search Results */}
+          {!loading && books.length > 0 && filteredBooks.length === 0 && (
             <div className="py-20 text-center">
               <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="text-gray-300" size={48} />

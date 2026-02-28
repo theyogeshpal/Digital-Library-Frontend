@@ -197,9 +197,9 @@ const BookDetails = () => {
                   {book.category}
                 </span>
                 <div className="flex items-center gap-1">
-                  <Star className="text-yellow-400 fill-yellow-400" size={20} />
-                  <span className="font-bold text-gray-900">{book.rating}</span>
-                  <span className="text-gray-500 text-sm">({book.reviews} reviews)</span>
+                  <Heart className="text-red-400 fill-red-400" size={20} />
+                  <span className="font-bold text-gray-900">{book.likeCount}</span>
+                  <span className="text-gray-500 text-sm">Likes</span>
                 </div>
               </div>
 
