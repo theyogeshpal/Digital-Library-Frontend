@@ -49,7 +49,7 @@ const About = () => {
         {/* Background Layer */}
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80"
+            src="hero-banner.avif"
             alt="Majestic Library"
             className="w-full h-full object-cover scale-105"
           />
@@ -158,7 +158,7 @@ const About = () => {
               <div className="absolute -inset-4 bg-gradient-to-br from-indigo-200 to-teal-200 rounded-[4rem] blur-2xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
               <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-2xl border-8 border-white group-hover:scale-[1.02] transition-transform duration-700">
                 <img
-                  src="https://images.unsplash.com/photo-1472173148041-00294f0814a2?auto=format&fit=crop&q=80"
+                  src="Ancient-books.avif"
                   alt="Ancient Books"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
@@ -294,7 +294,7 @@ const About = () => {
         <div className="relative group overflow-hidden rounded-[4rem]">
           <div className="absolute inset-0 bg-indigo-900 group-hover:scale-110 transition-transform duration-[2s]">
             <img
-              src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80"
+              src="global-search.avif"
               className="w-full h-full object-cover opacity-30"
               alt="Library"
             />

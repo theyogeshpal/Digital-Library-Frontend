@@ -68,7 +68,7 @@ const Contact = () => {
         {/* Background Image */}
         <div className="absolute inset-0 left-0 right-0">
           <img 
-            src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80" 
+            src="contact.avif" 
             alt="Contact Background" 
             className="w-full h-full object-cover"
           />

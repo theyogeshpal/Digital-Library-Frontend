@@ -92,7 +92,7 @@ const Home = () => {
               </div>
               <div className="text-left leading-tight">
                 <div className="font-bold text-indigo-950">12.5k Scholars</div>
-                <div className="text-xs text-teal-600 font-bold uppercase tracking-wider">Online Now</div>
+                {/* <div className="text-xs text-teal-600 font-bold uppercase tracking-wider">Online Now</div> */}
               </div>
             </div>
           </div>
