@@ -119,7 +119,7 @@ useEffect(() => {
     try {
 
       await axios.put(
-        'http://localhost:3000/api/user/changepassword',
+        'https://digital-library-backend-jesb.onrender.com/api/user/changepassword',
         {
           username: username,
           oldpassword: passwordData.oldpassword,
