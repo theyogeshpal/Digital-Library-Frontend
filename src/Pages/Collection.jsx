@@ -91,6 +91,11 @@ const Collection = () => {
         setLikedBooks([...likedBooks, bid]);
       }
 
+      // Reload books to update like count
+      const bookdata = await axios.get(
+        "https://digital-library-backend-jesb.onrender.com/book/show",
+      );
+      setBooks(bookdata.data.data);
     }
     catch (error) {
       console.log(error)
@@ -102,6 +107,7 @@ const Collection = () => {
         showConfirmButton: false
       });
     }
+
   }
 
   useEffect(() => {

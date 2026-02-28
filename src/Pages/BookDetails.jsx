@@ -79,6 +79,10 @@ const BookDetails = () => {
         timer: 1500,
         showConfirmButton: false
       });
+
+      // Reload book details to update like count
+      const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/book/show/${id}`);
+      setBook(response.data.data);
     } catch (error) {
       console.log(error);
       Swal.fire({

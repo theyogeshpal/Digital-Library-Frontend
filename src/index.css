@@ -123,3 +123,24 @@
   animation-duration: 11s;
   animation-delay: 6s;
 }
+
+@keyframes rocketFly {
+  0% {
+    left: -10%;
+    bottom: -10%;
+    transform: rotate(-45deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    left: 110%;
+    bottom: 110%;
+    transform: rotate(-45deg);
+    opacity: 0;
+  }
+}

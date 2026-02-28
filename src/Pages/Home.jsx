@@ -8,6 +8,7 @@ const Home = () => {
   const [books, setBooks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mostLikedBook, setMostLikedBook] = useState(null);
 
   useEffect(() => {
     const getBooks = async () => {
@@ -30,6 +31,10 @@ const Home = () => {
           };
         });
         setCategories(categoryData);
+
+        // Find most liked book
+        const sortedByLikes = allBooks.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0));
+        setMostLikedBook(sortedByLikes[0]);
       } catch (error) {
         console.error('Error fetching books:', error);
       } finally {
@@ -180,40 +185,77 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Volume Section */}
+      {/* Featured Book Section */}
       <section className="py-20 container mx-auto px-4">
-        <div className="bg-white rounded-[4rem] p-10 md:p-20 border border-indigo-50 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.1)] flex flex-col lg:flex-row items-center gap-20">
-          <div className="flex-1">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-sm mb-8 uppercase tracking-widest">
-              Volume of the Month
+        {mostLikedBook ? (
+          <div className="bg-white rounded-[4rem] p-10 md:p-15 border border-indigo-50 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.1)] flex flex-col lg:flex-row items-center gap-20">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-sm mb-8 uppercase tracking-widest">
+                Book of the Month
+              </div>
+              <h2 className="text-5xl font-black text-indigo-950 mb-8 leading-tight">
+                {mostLikedBook.title}
+              </h2>
+              <p className="text-xl text-gray-600 mb-4">
+                <span className="font-bold">By {mostLikedBook.author}</span>
+              </p>
+              <p className="text-xl text-gray-500 leading-relaxed mb-8">
+                {mostLikedBook.description}
+              </p>
+              <Link to={`/book/${mostLikedBook._id}`} className="flex items-center gap-4 text-xl font-black text-indigo-900 group">
+                Explore the Book
+                <span className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-900 group-hover:text-white transition-all">
+                  <ArrowRight />
+                </span>
+              </Link>
             </div>
-            <h2 className="text-5xl font-black text-indigo-950 mb-8 leading-tight">
-              The Evolution of <br />
-              <span className="text-teal-600">Digital Intelligence</span>
-            </h2>
-            <p className="text-xl text-gray-500 leading-relaxed mb-10">
-              A deep dive into how large language models are reshaping the methodology of academic study in the 21st century.
-            </p>
-            <Link to="/Collection" className="flex items-center gap-4 text-xl font-black text-indigo-900 group">
-              Explore the Volume
-              <span className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-900 group-hover:text-white transition-all">
-                <ArrowRight />
-              </span>
-            </Link>
+            <div className="flex-1 w-full relative flex justify-center">
+              <div className="w-1/2 aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 hover:scale-105 border-8 border-white">
+                <img
+                  src={mostLikedBook.image}
+                  alt={mostLikedBook.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-10 -left-10 bg-teal-500 p-5 rounded-3xl shadow-2xl animate-bounce animation-duration-5000">
+                <Star size={30} className="text-white" />
+              </div>
+            </div>
           </div>
-          <div className="flex-1 w-full relative">
-            <div className="aspect-[6/5] rounded-[3rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 hover:scale-105 border-8 border-white">
-              <img
-                src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80"
-                alt="Scholarly Research and Digital Intelligence documentation at Core Archive"
-                className="w-full h-full object-cover"
-              />
+        ) : (
+          <div className="bg-white rounded-[4rem] p-10 md:p-20 border border-indigo-50 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.1)] flex flex-col lg:flex-row items-center gap-20">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-sm mb-8 uppercase tracking-widest">
+                Book of the Month
+              </div>
+              <h2 className="text-5xl font-black text-indigo-950 mb-8 leading-tight">
+                The Evolution of <br />
+                <span className="text-teal-600">Digital Intelligence</span>
+              </h2>
+              <p className="text-xl text-gray-500 leading-relaxed mb-10">
+                A deep dive into how large language models are reshaping the methodology of academic study in the 21st century.
+              </p>
+              <Link to="/Collection" className="flex items-center gap-4 text-xl font-black text-indigo-900 group">
+                Explore the Collection
+                <span className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-900 group-hover:text-white transition-all">
+                  <ArrowRight />
+                </span>
+              </Link>
             </div>
-            <div className="absolute -bottom-10 -left-10 bg-teal-500 p-5 rounded-3xl shadow-2xl animate-bounce animation-duration-5000">
-              <Star size={30} className="text-white" />
+            <div className="flex-1 w-full relative">
+              <div className="aspect-[6/5] rounded-[3rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 hover:scale-105 border-8 border-white">
+                <img
+                  src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80"
+                  alt="Scholarly Research and Digital Intelligence documentation at Core Archive"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-10 -left-10 bg-teal-500 p-5 rounded-3xl shadow-2xl animate-bounce animation-duration-5000">
+                <Star size={30} className="text-white" />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* FAQ Section */}
