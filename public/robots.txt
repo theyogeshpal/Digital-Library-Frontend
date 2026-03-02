@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
 Sitemap: https://core-archive.com/sitemap.xml
+
+# Core Archive Digital Library
+# CORE ARCHIVE DIGITAL LIBRARY
+# Premium Digital Library Platform

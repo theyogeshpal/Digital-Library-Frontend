@@ -2,44 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://core-archive.com/</loc>
-    <lastmod>2026-02-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://core-archive.com/Collection</loc>
-    <lastmod>2026-02-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://core-archive.com/About</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://core-archive.com/Contact</loc>
+    <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://core-archive.com/Contact</loc>
-    <lastmod>2026-02-22</lastmod>
+    <loc>https://core-archive.com/Login</loc>
+    <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://core-archive.com/Login</loc>
-    <lastmod>2026-02-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://core-archive.com/Signup</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://core-archive.com/Terms</loc>
-    <lastmod>2026-02-22</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.6</priority>
   </url>
 </urlset>
