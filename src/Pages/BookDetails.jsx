@@ -72,26 +72,12 @@ const BookDetails = () => {
       });
       
       setIsLiked(!isLiked);
-      
-      Swal.fire({
-        icon: 'success',
-        title: res.data.message,
-        timer: 1500,
-        showConfirmButton: false
-      });
 
       // Reload book details to update like count
       const response = await axios.get(`https://digital-library-backend-jesb.onrender.com/book/show/${id}`);
       setBook(response.data.data);
     } catch (error) {
       console.log(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to update like status',
-        timer: 1500,
-        showConfirmButton: false
-      });
     }
   };
 

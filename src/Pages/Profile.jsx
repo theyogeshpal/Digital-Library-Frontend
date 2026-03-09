@@ -198,7 +198,7 @@ useEffect(() => {
 
       try {
         await axios.delete(
-          `https://digital-library-backend-jesb.onrender.com/api/admin/user/${userdata._id}`
+          `https://digital-library-backend-jesb.onrender.com/api/user/delete/${userdata._id}`
         );
 
         Swal.fire({
